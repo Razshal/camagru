@@ -1,4 +1,4 @@
 <footer>
-    <h2>Camagru© all right reserved</h2>
+    <h2>Camagru© all rights reserved</h2>
     <h3>mfonteni</h3>
 </footer>

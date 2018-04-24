@@ -3,8 +3,17 @@ html, body, header, ul, nav a, h1 {
     margin: 0;
 }
 
+body {
+    min-height: 100vh;
+}
+
 h1 {
     font-size: 20px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -32,3 +41,14 @@ a:hover {
     margin-right: auto;
 }
 
+footer {
+    text-align: right;
+    background-color: darkgray;
+    font-size: 10px;
+    color: whitesmoke;
+    padding: 10px;
+}
+
+main {
+    flex : 1;
+}
