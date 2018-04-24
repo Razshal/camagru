@@ -8,11 +8,6 @@ body {
     font-family: 'Open Sans';
 }
 
-h1 {
-    font-size: 30px;
-    font-family: Handlee;
-}
-
 body {
     display: flex;
     flex-direction: column;
@@ -27,17 +22,9 @@ header {
     line-height: 30px;
 }
 
-a {
-    padding: 20px;
-    font-size: 20px;
-    text-decoration: none;
-}
-
-
-
-#siteTitle {
-    justify-self: flex-start;
-    margin-right: auto;
+h1 {
+    font-size: 30px;
+    font-family: Handlee;
 }
 
 footer {
@@ -48,10 +35,38 @@ footer {
 
 main {
     flex : 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+a {
+    padding: 20px;
+    font-size: 20px;
+    text-decoration: none;
+}
 
-/**** Colors ****/
+#siteTitle {
+    justify-self: flex-start;
+    margin-right: auto;
+}
+
+form {
+    min-width: 20vw;
+    min-height: 15vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+input.submit {
+    width: 50px;
+    height: 50px;
+}
+
+/*********** Colors ***********/
 
 header {
     background-color: #07889b;
@@ -67,4 +82,9 @@ header, footer, a {
 
 a:hover {
     background-color: #155869;
+}
+
+form {
+    background-color: #e37222;
+    color: blanchedalmond;
 }

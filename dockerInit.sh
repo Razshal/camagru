@@ -11,4 +11,3 @@ fi
 eval $(docker-machine env $machine_name)
 docker run -dit -p 8888:3306 -e MYSQL_ROOT_PASSWORD=$mysql_password --name mysql mysql
 docker run -d -p 8100:80 -v $project_folder:/var/www/html --name phpapache php:apache
-
