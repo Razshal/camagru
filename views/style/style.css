@@ -5,10 +5,12 @@ html, body, header, ul, nav a, h1 {
 
 body {
     min-height: 100vh;
+    font-family: 'Open Sans';
 }
 
 h1 {
-    font-size: 20px;
+    font-size: 30px;
+    font-family: Handlee;
 }
 
 body {
@@ -17,24 +19,21 @@ body {
 }
 
 header {
-    background-color: darkgray;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-end;
     align-items: center;
+    line-height: 30px;
 }
 
 a {
-    padding: 15px;
+    padding: 20px;
     font-size: 20px;
     text-decoration: none;
-    color: whitesmoke;
 }
 
-a:hover {
-    background-color: dimgrey;
-}
+
 
 #siteTitle {
     justify-self: flex-start;
@@ -43,12 +42,29 @@ a:hover {
 
 footer {
     text-align: right;
-    background-color: darkgray;
     font-size: 10px;
-    color: whitesmoke;
     padding: 10px;
 }
 
 main {
     flex : 1;
+}
+
+
+/**** Colors ****/
+
+header {
+    background-color: #07889b;
+}
+
+footer {
+    background-color: #66b9bf;
+}
+
+header, footer, a {
+    color: whitesmoke;
+}
+
+a:hover {
+    background-color: #155869;
 }
