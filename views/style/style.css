@@ -1,0 +1,34 @@
+html, body, header, ul, nav a, h1 {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+header {
+    background-color: darkgray;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+a {
+    padding: 15px;
+    font-size: 20px;
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+a:hover {
+    background-color: dimgrey;
+}
+
+#siteTitle {
+    justify-self: flex-start;
+    margin-right: auto;
+}
+
