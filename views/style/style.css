@@ -6,9 +6,6 @@ html, body, header, ul, nav a, h1 {
 body {
     min-height: 100vh;
     font-family: 'Open Sans';
-}
-
-body {
     display: flex;
     flex-direction: column;
 }
@@ -24,7 +21,7 @@ header {
 
 h1 {
     font-size: 30px;
-    font-family: Handlee;
+    font-family: 'Handlee';
 }
 
 footer {
@@ -38,6 +35,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-around;
 }
 
 a {
@@ -51,19 +49,33 @@ a {
     margin-right: auto;
 }
 
-form {
-    min-width: 20vw;
-    min-height: 15vh;
+.loginForm {
+    width: 60vw;
+    height: 50vh;
     display: flex;
     flex-direction: column;
     padding: 20px;
     justify-content: space-around;
     align-items: center;
+    font-size: 25px;
 }
 
-input.submit {
-    width: 50px;
-    height: 50px;
+.loginForm input[type='text'],
+.loginForm input[type='password'] {
+    -webkit-appearance: none;
+    border: 0;
+    border-bottom: 1px solid whitesmoke;
+    font-size: 20px;
+    outline: none;
+    width: 50vw;
+}
+
+input[type='submit'] {
+    border: 0;
+    border-radius: 10px;
+    min-height: 50px;
+    width: 100px;
+    font-size: 25px;
 }
 
 /*********** Colors ***********/
@@ -76,7 +88,10 @@ footer {
     background-color: #66b9bf;
 }
 
-header, footer, a {
+header, footer, a, form,
+input[type='text'],
+input[type='password'],
+input[type='submit'] {
     color: whitesmoke;
 }
 
@@ -84,7 +99,16 @@ a:hover {
     background-color: #155869;
 }
 
-form {
+form, input[type='text'],
+input[type='password'] {
     background-color: #e37222;
-    color: blanchedalmond;
+}
+
+input[type='submit']:hover {
+    cursor: pointer;
+    background-color: #9b4418;
+}
+
+input[type='submit'] {
+    background-color: #e98e4e;
 }

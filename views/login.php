@@ -4,12 +4,10 @@
     <body>
         <?php include ("header.php") ?>
         <main>
-            <h2>Welcome to Camagru, please login</h2>
-            <form id="loginForm">
-                Login<br/>
-                <input type="text" title="login" name="login"><br/>
-                Password<br/>
-                <input type="password" title="password" name="password"><br/>
+            <form class="loginForm">
+                <p>Please Login</p><br/>
+                <input type="text" placeholder="Login" title="login" name="login"><br/>
+                <input type="password" placeholder="Password" title="password" name="password"><br/>
                 <input class="submit" type="submit" title="send" name="submit" value="Login"><br/>
             </form>
         </main>
