@@ -75,14 +75,15 @@ if ($success === 0) {
         <body>
             <?php include("../views/structure/header.php") ?>
             <main>
+                <div>
                 <h2>Setup tried, Site status :</h2>
-                <p style='color:mediumseagreen'><?php
+                <?php
                     if ($success === 0 || $success === 4)
-                        echo ("<h2 class='success'>Website is ok</h2>");
+                        echo ("<h3 class='success'>Website is ok</h3>");
                     else
-                        echo ("<h2 class='error'>It seems to have a problem with database</h2>")
+                        echo ("<h3 class='error'>It seems to have a problem with database</h3>")
                         ;?>
-                </p>
+                </div>
             </main>
         </body>
         <?php include("../views/structure/footer.php") ?>

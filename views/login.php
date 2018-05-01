@@ -17,17 +17,25 @@ array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION))), $_POST["login"], $_POST["p
     $_SESSION["user"] = $_POST["login"];
 }
 
-var_dump($auth);
-var_dump(hash_pw($_POST["password"]));
-
 ?>
 <html lang="en">
     <body>
         <?php include ("structure/header.php") ?>
         <main>
             <div id="errorPlace">
-                <?php if ($auth === false) echo ("<h2 class='error'>Failed to authenticate</h2>");?>
+                <?php
+                if ($auth === false)
+                    echo ("<h2 class='error'>Failed to authenticate</h2>");
+                else if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "") {
+                    echo ("<h2 class='success'>Logged as {$_SESSION["user"]}</h2>");
+                }
+                ?>
             </div>
+            <?php
+            if (!isset($_SESSION) || !isset($_SESSION["user"])
+                || $_SESSION["user"] === "")
+            {
+                ?>
             <form class="loginForm" method="post" action="login.php">
                 <p>Login</p><br/>
                 <input type="text" placeholder="Login" title="login" name="login"><br/>
@@ -35,6 +43,8 @@ var_dump(hash_pw($_POST["password"]));
                 <input class="submit" type="submit" title="send" name="submit" value="Login"><br/>
                 <a class="link" href="signin.php">Don't have an account ? Sign in</a>
             </form>
+            <?php
+            }?>
         </main>
     </body>
     <?php include ("structure/footer.php") ?>
