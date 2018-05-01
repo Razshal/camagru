@@ -12,6 +12,7 @@ include_once ("../model/get_database.php");
                 <input type="text" placeholder="Login" title="login" name="login"><br/>
                 <input type="password" placeholder="Password" title="password" name="password"><br/>
                 <input class="submit" type="submit" title="send" name="submit" value="Login"><br/>
+                <a class="link" href="signin.php">Don't have an account ? Sign in</a>
             </form>
         </main>
     </body>

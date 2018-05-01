@@ -2,5 +2,5 @@
 
 function hash_pw($pw)
 {
-    return hash($pw, "SHA512");
+    return hash("SHA512", $pw);
 }

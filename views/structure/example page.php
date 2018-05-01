@@ -1,6 +1,5 @@
-<!DOCTYPE html>
+<?php include("views/head.php") ?>
 <html lang="en">
-    <?php include("views/head.php") ?>
     <body>
         <?php include("views/header.php") ?>
         <main>

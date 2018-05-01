@@ -1,12 +1,12 @@
 <?php
 
-
-function is_there_admins($database_pdo)
-{
-    return !!$database_pdo->query("
-              SELECT * FROM user WHERE user.isAdmin LIKE 1");
+function get_user($database_PDO, $login) {
+    return $database_PDO->query("
+    SELECT login FROM user WHERE login LIKE '{$login}'");
 }
 
-function is_valid_user_connected($database_pdo, $session) {
-
+function get_mail($database_PDO, $mail) {
+    return $database_PDO->query("
+    SELECT * FROM user WHERE `mail` LIKE '{$mail}'");
 }
+
