@@ -59,9 +59,4 @@ if (isset($_POST) && $_POST["submit"] === "Sign-in") {
     <?php include("structure/footer.php") ?>
 </html>
 
-<script>
-    var errorField = document.getElementById("errorPlace");
-    console.log(errorField);
-    if (errorField.children.length < 1)
-        errorField.style.display = "none";
-</script>
+<script src="style/style.js"></script>
