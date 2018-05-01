@@ -1,17 +1,19 @@
 <?php
 
-function valid_mail ($mail) {
-    return isset($mail) && filter_var($mail, FILTER_VALIDATE_EMAIL);
+function validNewMail ($databasePDO, $mail) {
+    return isset($mail) && filter_var($mail, FILTER_VALIDATE_EMAIL)
+        && empty(get_mail($databasePDO, $mail));
 }
 
-function valid_new_password ($password) {
+function validNewPassword ($password) {
     return isset($password)
         && strlen($password) >= 8
         && preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password);
 }
 
-function valid_login ($login) {
-    return isset($login) && strlen($login) >= 5;
+function validNewLogin ($databasePDO, $login) {
+    return isset($login) && strlen($login) >= 5
+        && empty(get_user($databasePDO, $login));
 }
 
 /*

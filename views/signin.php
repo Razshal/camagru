@@ -7,23 +7,22 @@ include_once ("../config/database.php");
 
 //TODO: Auto login after creating account (easy)
 
-$valid_mail = true;
-$valid_pass = true;
-$login_error = true;
-$query_error = false;
+$validMail = true;
+$validPass = true;
+$validLogin = true;
+$queryError = false;
 
 if (isset($_POST) && $_POST["submit"] === "Sign-in") {
-    $database_PDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
+    $databasePDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
         array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
-    $valid_mail = valid_mail($_POST["mail"]) && !get_mail($database_PDO, $_POST["mail"]);
-    $valid_pass = valid_new_password($_POST["password"]);
-    $valid_login = valid_login($_POST["login"]) && !get_user($database_PDO, $_POST["login"]);
+    $validMail = validNewMail($databasePDO, $_POST["mail"]);
+    $validPass = validNewPassword($_POST["password"]);
+    $validLogin = validNewLogin($databasePDO, $_POST["login"]);
 
-    if ($valid_mail && $valid_pass && $valid_login) {
-        $query_error = new_user($database_PDO, $_POST["login"], $_POST["mail"], $_POST["password"]);
+    if ($validMail && $validPass && $validLogin) {
+        $queryError = newUser($databasePDO, $_POST["login"], $_POST["mail"], $_POST["password"]);
     }
-    var_dump(!get_mail($database_PDO, $_POST["mail"]));
 }
 
 ?>
@@ -34,13 +33,14 @@ if (isset($_POST) && $_POST["submit"] === "Sign-in") {
         <main>
             <div id="errorPlace">
             <?php
-            if (!$valid_mail)
-                echo ("<h2 class='error'>Mail is already used or not valid</h2>");
-            if (!$valid_login)
-                echo ("<h2 class='error'>Login is already used or not valid</h2>");
-            if (!$valid_pass)
-                echo ("<h2 class='error'>Bad Password</h2>");
-            if ($query_error != false && $query_error < 1)
+            if (!$validMail)
+                echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
+            if (!$validLogin)
+                echo ("<h2 class='error'>Login is already in use or not valid (at least 5 chars)</h2>");
+            if (!$validPass)
+                echo ("<h2 class='error'>Password should be at least 8 chars and
+                        contains at least one letter and one digit</h2>");
+            if ($queryError != false && $queryError < 1)
                 echo ("<h2 class='error'>Error during creating new user, please retry</h2>");
             ?>
             </div>
