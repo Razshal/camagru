@@ -87,11 +87,12 @@ input[type='submit'] {
 }
 
 @media all and (max-height: 600px) {
-    body {
-        min-height: 400px;
-    }
     form {
         min-height: 200px;
+        margin: 10px;
+    }
+    footer {
+        font-size: 7px;
     }
 }
 
