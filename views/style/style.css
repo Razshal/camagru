@@ -85,7 +85,7 @@ a.link {
     text-decoration: none;
     padding: 5px;
     margin-top: 5px;
-    font-size: 10px;
+    font-size: 12px;
     border-radius: 10px;
 }
 
@@ -102,10 +102,17 @@ a.link {
 }
 
 @media all and (max-height: 600px) {
-    form {
+    form.loginForm {
         min-height: 200px;
         margin: 10px;
     }
+
+    input[type='submit']{
+        font-size: 20px;
+        min-height: 40px;
+        width: 80px;
+    }
+
     footer {
         font-size: 7px;
     }
@@ -148,7 +155,7 @@ header a:hover {
     background-color: #155869;
 }
 
-form,
+form.loginForm,
 input[type='text'],
 input[type='email'],
 input[type='password'] {
@@ -167,4 +174,8 @@ a.link {
 
 .error {
     color: darkred;
+}
+
+.success {
+    color: darkseagreen;
 }

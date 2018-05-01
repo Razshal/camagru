@@ -42,6 +42,9 @@ if (isset($_POST) && $_POST["submit"] === "Sign-in") {
                         contains at least one letter and one digit</h2>");
             if ($queryError != false && $queryError < 1)
                 echo ("<h2 class='error'>Error during creating new user, please retry</h2>");
+            else if ($queryError === 1) {
+                echo ("<h2 class='success'>Account created</h2>");
+            }
             ?>
             </div>
             <form class="loginForm" method="post" action="signin.php">
