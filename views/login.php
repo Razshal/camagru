@@ -17,7 +17,8 @@ array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION))), $_POST["login"], $_POST["p
     $_SESSION["user"] = $_POST["login"];
 }
 
-var_dump($_POST);
+var_dump($auth);
+var_dump(hash_pw($_POST["password"]));
 
 ?>
 <html lang="en">
