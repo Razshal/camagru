@@ -25,11 +25,13 @@ if ($success === 0) {
 
     $success += $database->exec("
     CREATE TABLE IF NOT EXISTS user (
-      id       INT         NOT NULL AUTO_INCREMENT,
-      login    VARCHAR(20) NOT NULL,
-      isAdmin  INT         NOT NULL DEFAULT 0,
-      password VARCHAR(128),
-      mail     VARCHAR(254),
+      id          INT         NOT NULL AUTO_INCREMENT,
+      login       VARCHAR(20) NOT NULL,
+      isAdmin     INT         NOT NULL DEFAULT 0,
+      password    VARCHAR(128),
+      mail        VARCHAR(254),
+      check_token VARCHAR(128),
+      is_verified INT NOT NULL DEFAULT 0,
       PRIMARY KEY (`id`))
       ENGINE = InnoDB;
     ");
