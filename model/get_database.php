@@ -7,6 +7,6 @@ function is_there_admins($database_pdo)
               SELECT * FROM user WHERE user.isAdmin LIKE 1");
 }
 
-function is_valid_user_connected($database_pdo) {
+function is_valid_user_connected($database_pdo, $session) {
 
 }

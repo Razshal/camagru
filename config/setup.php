@@ -63,18 +63,16 @@ CREATE TABLE IF NOT EXISTS `like` (
   CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
   ENGINE = InnoDB;
 ");
-    ?>
-    <!DOCTYPE html>
+    include("../views/structure/head.php") ?>
     <html lang="en">
-        <?php include("../views/head.php") ?>
         <body>
-            <?php include("../views/header.php") ?>
+            <?php include("../views/structure/header.php") ?>
             <main>
                 <h2>Setup Page</h2>
                 <p style='color:mediumseagreen'>Website is Ok</p>
             </main>
         </body>
-        <?php include("../views/footer.php") ?>
+        <?php include("../views/structure/footer.php") ?>
     </html>
 
     <?php
