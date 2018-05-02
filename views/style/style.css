@@ -51,7 +51,7 @@ header a {
 
 .loginForm {
     width: 60vw;
-    height: 50vh;
+    min-height: 50vh;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -174,8 +174,14 @@ a.link {
 
 .error {
     color: darkred;
+    font-size: 20px;
 }
 
 .success {
     color: mediumseagreen;
+    font-size: 20px;
+}
+
+::-webkit-input-placeholder {
+    color: rgba(245, 245, 245, 0.50);
 }

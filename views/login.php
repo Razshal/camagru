@@ -4,19 +4,21 @@ include_once ("../config/database.php");
 include_once ("../model/get_database.php");
 include_once ("../controller/tools.php");
 
-$auth = NULL;
+try {
+    $auth = NULL;
 
-if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "") {
-    $_SESSION["user"] = "";
+    if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "") {
+        $_SESSION["user"] = "";
+    } else if (isset($_POST) && isset($_POST["submit"]) && $_POST["submit"] === "Login"
+        && isset($_POST["login"]) && $_POST["login"] != ""
+        && isset($_POST["password"]) && $_POST["password"] != ""
+        && ($auth = authenticate((new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
+            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION))), $_POST["login"], $_POST["password"]))) {
+        $_SESSION["user"] = $_POST["login"];
+    }
+} catch (Exception $e) {
+    echo $databaseError;
 }
-else if (isset($_POST) && isset($_POST["submit"]) && $_POST["submit"] === "Login"
-&& isset($_POST["login"]) && $_POST["login"] != ""
-&& isset($_POST["password"]) && $_POST["password"] != ""
-&& ($auth = authenticate((new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
-array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION))), $_POST["login"], $_POST["password"]))) {
-    $_SESSION["user"] = $_POST["login"];
-}
-
 ?>
 <html lang="en">
     <body>
@@ -25,7 +27,7 @@ array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION))), $_POST["login"], $_POST["p
             <div id="errorPlace">
                 <?php
                 if ($auth === false)
-                    echo ("<h2 class='error'>Failed to authenticate</h2>");
+                    echo ("<h2 class='error'>Wrong username or account needs verifying</h2>");
                 else if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "") {
                     echo ("<h2 class='success'>Logged as {$_SESSION["user"]}</h2>");
                 }
