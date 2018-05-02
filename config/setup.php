@@ -63,14 +63,14 @@ if ($success === 0) {
       ENGINE = InnoDB;
     ");
 
-    $success += $database->exec("
+    var_dump( $database->exec("
     CREATE TABLE IF NOT EXISTS `like` (
       post_id      INT          NOT NULL,
       user_id      INT          NOT NULL,
       CONSTRAINT fk_like_post_id FOREIGN KEY (post_id) REFERENCES post(id),
       CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
       ENGINE = InnoDB;
-    ");
+    "));
 }
 ?>
     <html lang="en">
@@ -80,10 +80,12 @@ if ($success === 0) {
                 <div>
                 <h2>Setup tried, Site status :</h2>
                 <?php
+                    if ($success > 0)
+                        echo ("<p class='success'>Database created</p>");
                     if ($success === 0 || $success === 4)
-                        echo ("<h3 class='success'>Website is ok</h3>");
+                        echo ("<p class='success'>Website is ok</p>");
                     else
-                        echo ("<h3 class='error'>It seems to have a problem with database</h3>")
+                        echo ("<p class='error'>Cannot connect to database</p>")
                         ;?>
                 </div>
             </main>
