@@ -11,4 +11,4 @@ fi
 eval $(docker-machine env $machine_name)
 docker run -dit -p 3306:3306 -e MYSQL_ROOT_PASSWORD=$mysql_password -e MYSQL_DATABASE=camagru --name mysql mysql:5.6
 docker build -t phpapache .
-docker run -d -p 80:80 -v $project_folder:/var/www/html --name phpapache phpapache
+docker run -d -p 80:80 -p 25:25 -v $project_folder:/var/www/html --name phpapache phpapache

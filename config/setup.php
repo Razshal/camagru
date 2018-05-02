@@ -92,8 +92,3 @@ if ($success === 0) {
         </body>
         <?php include("../views/structure/footer.php") ?>
     </html>
-
-    <?php
-?>
-
-
