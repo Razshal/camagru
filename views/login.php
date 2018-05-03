@@ -18,6 +18,7 @@ try {
     }
 } catch (Exception $e) {
     echo $databaseError;
+    echo $e;
 }
 ?>
 <html lang="en">

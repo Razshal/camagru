@@ -12,8 +12,15 @@ function validNewPassword ($password) {
 }
 
 function validNewLogin ($databasePDO, $login) {
-    return isset($login) && strlen($login) >= 5
+    return isset($login) && strlen($login) >= 4
         && empty(get_user($databasePDO, $login));
+}
+
+function validChars ($login) {
+    /*if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $login))*/
+    if (preg_match('/[\\]/', $login))
+        return false;
+    return true;
 }
 
 /*

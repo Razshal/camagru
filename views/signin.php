@@ -41,7 +41,7 @@ try {
             if (!$validMail)
                 echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
             if (!$validLogin)
-                echo ("<h2 class='error'>Login is already in use or not valid (at least 5 chars)</h2>");
+                echo ("<h2 class='error'>Login is already in use or not valid (4 chars >= login <= 20 chars)</h2>");
             if (!$validPass)
                 echo ("<h2 class='error'>Password should be at least 8 chars and
                         contains at least one letter and one digit</h2>");

@@ -25,7 +25,7 @@ if ($success === 0) {
 
     $success += $database->exec("
     CREATE TABLE IF NOT EXISTS user (
-      id          INT         NOT NULL AUTO_INCREMENT,
+      id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
       login       VARCHAR(20) NOT NULL,
       isAdmin     INT         NOT NULL DEFAULT 0,
       password    VARCHAR(128),
@@ -38,7 +38,7 @@ if ($success === 0) {
 
     $success += $database->exec("
     CREATE TABLE IF NOT EXISTS post (
-      id          INT       NOT NULL AUTO_INCREMENT,
+      id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
       user_id     INT       NOT NULL,
       image       VARCHAR(100),
       description VARCHAR(256),
@@ -52,7 +52,7 @@ if ($success === 0) {
 
     $success += $database->exec("
     CREATE TABLE IF NOT EXISTS comment (
-      id           INT          NOT NULL AUTO_INCREMENT,
+      id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
       post_id      INT          NOT NULL,
       `text`       VARCHAR(256) NOT NULL,
       comment_date TIMESTAMP    NOT NULL DEFAULT now(),
@@ -63,14 +63,14 @@ if ($success === 0) {
       ENGINE = InnoDB;
     ");
 
-    var_dump( $database->exec("
+    $success = $database->exec("
     CREATE TABLE IF NOT EXISTS `like` (
       post_id      INT          NOT NULL,
       user_id      INT          NOT NULL,
       CONSTRAINT fk_like_post_id FOREIGN KEY (post_id) REFERENCES post(id),
       CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
       ENGINE = InnoDB;
-    "));
+    ");
 }
 ?>
     <html lang="en">
@@ -85,8 +85,7 @@ if ($success === 0) {
                     if ($success === 0 || $success === 4)
                         echo ("<p class='success'>Website is ok</p>");
                     else
-                        echo ("<p class='error'>Cannot connect to database</p>")
-                        ;?>
+                        echo ("<p class='error'>Cannot connect to database</p>");?>
                 </div>
             </main>
         </body>
