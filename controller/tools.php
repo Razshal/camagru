@@ -3,7 +3,6 @@
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
 
 $databaseError = "<p class='error'>Fatal error, cannot access database</p>";
-$GLOBALS["httpAddress"] = "192.168.99.100";
 
 function hash_pw($pw) {
     return hash("SHA512", $pw);
@@ -13,8 +12,13 @@ function authenticate ($databasePDO, $login, $password) {
     if (!validChars($login))
         return false;
     $password = hash_pw($password);
-    $query = $databasePDO->query("
-    SELECT * FROM user WHERE login LIKE '{$login}' AND password LIKE '{$password}'");
+
+    $query = $databasePDO->prepare("
+    SELECT * FROM user 
+    WHERE login LIKE ':login' 
+    AND password LIKE ':password'");
+
+    $query->execute(array(':login' => $login, ':password' => $password));
     return !empty($query->fetchAll());
 }
 //TODO https://stackoverflow.com/questions/16381365/difference-between-pdo-query-and-pdo-exec

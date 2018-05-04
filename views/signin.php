@@ -3,7 +3,6 @@ include("structure/head.php");
 include_once ("../model/checks.php");
 include_once ("../model/get_database.php");
 include_once ("../model/set_database.php");
-include_once ("../controller/tools.php");
 include_once ("../config/database.php");
 
 //TODO: Auto login after creating account (easy)
@@ -24,7 +23,8 @@ try {
         $validLogin = validNewLogin($databasePDO, $_POST["login"]);
 
         if ($validMail && $validPass && $validLogin) {
-            $queryError = newUser($databasePDO, $_POST["login"], $_POST["mail"], $_POST["password"]);
+            $queryError = newUser($databasePDO, $_POST["login"],
+                $_POST["mail"], $_POST["password"]);
         }
     }
 } catch (Exception $e) {

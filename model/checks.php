@@ -18,7 +18,7 @@ function validNewLogin ($databasePDO, $login) {
 
 function validChars ($login) {
     /*if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $login))*/
-    if (preg_match('/[\\]/', $login))
+    if (preg_match('/[\\\]/', $login))
         return false;
     return true;
 }
