@@ -15,17 +15,18 @@ function sendUserCheckMail ($database, $login, $mail, $token) {
         "Or to access this page on your web browser {$token}";
     $headers =
         "From: webmaster@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
-        'Reply-To: webmaster@{$GLOBALS["siteAddress"]}.com' . "\r\n" .
+        "Reply-To: webmaster@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
         'X-Mailer: PHP/' . phpversion() .
         'MIME-Version: 1.0' . "\r\n" .
         'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    /*
-    if (!mail($mail, $subject, $message, $headers)) {
-        $success = -3;
+
+    if (!($success = mail($mail, $subject, $message, $headers))) {
+        $success = false;
         $database->exec("DELETE FROM user
         WHERE user.login LIKE '{$login}';");
     }
-    */
+    var_dump($success);
+    return $success;
 }
 
 function newUser($database, $login, $mail, $password) {
@@ -39,8 +40,7 @@ function newUser($database, $login, $mail, $password) {
             ':password' => $password,
             ':mail' => $mail,
             ':token' => $token));
-        //$success = $success && sendUserCheckMail($database, $login, $mail, $token);
-        return $success;
+        return $success && sendUserCheckMail($database, $login, $mail, $token);
     } catch (Exception $e) {
         return false;
     }

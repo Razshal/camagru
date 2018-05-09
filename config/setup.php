@@ -12,18 +12,8 @@ include_once ("../model/get_database.php");
  *
  */
 
-$success = 0;
-try {
-    $database = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
-        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-    $success = 0;
-} catch (Exception $e) {
-    $success = -1;
-}
-
-if ($success === 0) {
-
-    $success += $database->exec("
+if ($databaseSuccess === true) {
+    $success += $databasePDO->exec("
     CREATE TABLE IF NOT EXISTS user (
       id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
       login       VARCHAR(20) NOT NULL,
@@ -36,7 +26,7 @@ if ($success === 0) {
       ENGINE = InnoDB;
     ");
 
-    $success += $database->exec("
+    $success += $databasePDO->exec("
     CREATE TABLE IF NOT EXISTS post (
       id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
       user_id     INT       NOT NULL,
@@ -50,7 +40,7 @@ if ($success === 0) {
       ENGINE = InnoDB;
     ");
 
-    $success += $database->exec("
+    $success += $databasePDO->exec("
     CREATE TABLE IF NOT EXISTS comment (
       id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
       post_id      INT          NOT NULL,
@@ -63,7 +53,7 @@ if ($success === 0) {
       ENGINE = InnoDB;
     ");
 
-    $success = $database->exec("
+    $success = $databasePDO->exec("
     CREATE TABLE IF NOT EXISTS `like` (
       post_id      INT          NOT NULL,
       user_id      INT          NOT NULL,
@@ -73,21 +63,19 @@ if ($success === 0) {
     ");
 }
 ?>
-    <html lang="en">
-        <body>
-            <?php include("../views/structure/header.php") ?>
-            <main>
-                <div>
+<html lang="en">
+    <body>
+    <?php include("../views/structure/header.php") ?>
+        <main>
+            <div>
                 <h2>Setup tried, Site status :</h2>
                 <?php
-                    if ($success > 0)
-                        echo ("<p class='success'>Database created</p>");
-                    if ($success === 0 || $success === 4)
-                        echo ("<p class='success'>Website is ok</p>");
-                    else
-                        echo ("<p class='error'>Cannot connect to database</p>");?>
-                </div>
-            </main>
-        </body>
-        <?php include("../views/structure/footer.php") ?>
-    </html>
+                if ($databaseSuccess === true)
+                    echo ("<p class='success'>Website is ok</p>");
+                else if (isset($DB_ERROR_MESSAGE))
+                    echo $DB_ERROR_MESSAGE;?>
+            </div>
+        </main>
+    </body>
+    <?php include("../views/structure/footer.php") ?>
+</html>

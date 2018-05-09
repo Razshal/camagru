@@ -5,8 +5,9 @@ include_once ("../model/checks.php");
 include_once ("../controller/tools.php");
 include_once ("../config/database.php");
 
-try {
+$done = 0;
 
+try {
     $database = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
         array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
     $success = false;
@@ -16,7 +17,6 @@ try {
         && isset($_GET["user"])
         && !empty($user = get_user($database, $_GET["user"]))
         && isset($_GET["token"])) {
-
         if (validChars($_GET["user"])) {
             $query = $database->prepare("
         UPDATE user 
@@ -24,7 +24,8 @@ try {
         WHERE login = :login");
             $done = $query->execute(array(':login' => $_GET["user"]));
         }
-        var_dump($done);
+    } else {
+        $done = false;
     }
 } catch (Exception $s) {
     echo $databaseError;
@@ -33,7 +34,14 @@ try {
     <body>
         <?php include($_SERVER["DOCUMENT_ROOT"] . "/views/structure/header.php") ?>
         <main>
-            <h2>Account verification</h2>
+            <div id="errorPlace">
+                <?php
+                if ($done === false)
+                    echo ("<h2 class='error'>Error wrong token/login</h2>");
+                if ($done === true)
+                    echo ("<h2 class='success'>Account activated</h2>");
+                ?>
+            </div>
         </main>
     </body>
 <?php include($_SERVER["DOCUMENT_ROOT"] . "/views/structure/footer.php") ?>

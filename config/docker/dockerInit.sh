@@ -6,6 +6,8 @@ machine_name="web"
 if ! docker-machine ls -q | grep $machine_name
 then
 	docker-machine create --driver virtualbox $machine_name
+else
+    docker-machine start $machine_name
 fi
 
 eval $(docker-machine env $machine_name)

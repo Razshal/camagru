@@ -1,19 +1,16 @@
 <?php
-include("structure/head.php");
+include_once ("structure/head.php");
 include_once ("../model/checks.php");
 include_once ("../model/get_database.php");
 include_once ("../model/set_database.php");
-include_once ("../config/database.php");
-
-//TODO: Auto login after creating account (easy)
+include_once ("../config/site.php");
 
 $validMail = true;
 $validPass = true;
 $validLogin = true;
-$queryError = false;
+$queryError = 0;
 
 try {
-
     if (isset($_POST) && $_POST["submit"] === "Sign-in") {
         $databasePDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
@@ -31,27 +28,25 @@ try {
     echo $databaseError;
 }
 ?>
-
 <html lang="en">
     <body>
         <?php include("structure/header.php") ?>
         <main>
             <div id="errorPlace">
             <?php
-            if (!$validMail)
-                echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
-            if (!$validLogin)
-                echo ("<h2 class='error'>Login is already in use or not valid (4 chars >= login <= 20 chars)</h2>");
-            if (!$validPass)
-                echo ("<h2 class='error'>Password should be at least 8 chars and
-                        contains at least one letter and one digit</h2>");
-            if ($queryError !== false && $queryError < 1)
-                echo ("<h2 class='error'>Error during creating new user, please retry</h2>");
-            if ($queryError === -3)
-                echo ("<h2 class='error'>Cannot send verification mail</h2>");
-            else if ($queryError === 1) {
-                echo ("<h2 class='success'>Account created</h2>");
-            }
+                if (!$validMail)
+                    echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
+                if (!$validLogin)
+                    echo ("<h2 class='error'>Login is already in use or not valid 
+                    (4 chars >= login <= 20 chars)</h2>");
+                if (!$validPass)
+                    echo ("<h2 class='error'>Password should be at least 8 chars and
+                    contains at least one letter and one digit</h2>");
+                if ($queryError === false)
+                    echo ("<h2 class='error'>Error during creating new user, please retry</h2>");
+                else if ($queryError === true) {
+                    echo ("<h2 class='success'>Account created</h2>");
+                }
             ?>
             </div>
             <form class="loginForm" method="post" action="signin.php">
@@ -65,5 +60,4 @@ try {
     </body>
     <?php include("structure/footer.php") ?>
 </html>
-
 <script src="style/style.js"></script>
