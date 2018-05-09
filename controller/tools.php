@@ -9,16 +9,19 @@ function hash_pw($pw) {
 }
 
 function authenticate ($databasePDO, $login, $password) {
-    if (!validChars($login))
+    try {
+        if (!validChars($login))
+            return false;
+        $password = hash_pw($password);
+        $query = $databasePDO->prepare("
+          SELECT * FROM user 
+          WHERE login LIKE ':login' 
+          AND password LIKE ':password'");
+        $query = $query->execute(array(':login' => $login, ':password' => $password));
+        return $query;
+    }
+    catch (Exception $e) {
         return false;
-    $password = hash_pw($password);
-
-    $query = $databasePDO->prepare("
-    SELECT * FROM user 
-    WHERE login LIKE ':login' 
-    AND password LIKE ':password'");
-
-    $query->execute(array(':login' => $login, ':password' => $password));
-    return !empty($query->fetchAll());
+    }
 }
 //TODO https://stackoverflow.com/questions/16381365/difference-between-pdo-query-and-pdo-exec
