@@ -3,16 +3,11 @@
  * capable de créer ou recréer le schéma de la base de données,
  * en utilisant les infos contenues dans le fichier config/database.php.
  */
-include_once("../views/structure/head.php");
-include_once ("database.php");
-include_once ("../model/get_database.php");
 
-/* IMPORTANT: supprimer le try catch, il ne faut pas ecrire le mdp de
- * la database sur une page a laquelle les utilisateurs peuvent tenter d'acceder
- *
- */
+include_once($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
 
-if ($databaseSuccess === true) {
+if ($DB_ERROR === false) {
     $success += $databasePDO->exec("
     CREATE TABLE IF NOT EXISTS user (
       id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
@@ -65,17 +60,17 @@ if ($databaseSuccess === true) {
 ?>
 <html lang="en">
     <body>
-    <?php include("../views/structure/header.php") ?>
+    <?php include($_SERVER["DOCUMENT_ROOT"] . "/views/structure/header.php") ?>
         <main>
             <div>
                 <h2>Setup tried, Site status :</h2>
                 <?php
-                if ($databaseSuccess === true)
+                if ($DB_ERROR === false)
                     echo ("<p class='success'>Website is ok</p>");
-                else if (isset($DB_ERROR_MESSAGE))
-                    echo $DB_ERROR_MESSAGE;?>
+                else if ($DB_ERROR !== false)
+                    echo $DB_ERROR;?>
             </div>
         </main>
     </body>
-    <?php include("../views/structure/footer.php") ?>
+    <?php include($_SERVER["DOCUMENT_ROOT"] . "/views/structure/footer.php") ?>
 </html>

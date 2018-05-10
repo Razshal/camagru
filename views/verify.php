@@ -1,9 +1,9 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
-include_once ("../model/get_database.php");
-include_once ("../model/checks.php");
-include_once ("../controller/tools.php");
-include_once ("../config/database.php");
+include_once ("/views/structure/head.php");
+include_once ("/model/get_database.php");
+include_once ("/model/checks.php");
+include_once ("/controller/tools.php");
+include_once ("/config/database.php");
 
 $done = 0;
 

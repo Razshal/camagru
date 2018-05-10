@@ -1,32 +1,24 @@
 <?php
 include_once ("structure/head.php");
-include_once ("../model/checks.php");
-include_once ("../model/get_database.php");
-include_once ("../model/set_database.php");
-include_once ("../config/site.php");
+include_once ("/model/checks.php");
+include_once ("/model/set_database.php");
+include_once ("/config/database.php");
 
 $validMail = true;
 $validPass = true;
 $validLogin = true;
-$queryError = 0;
+$querySuccess = 0;
 
-try {
-    if (isset($_POST) && $_POST["submit"] === "Sign-in") {
-        $databasePDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
-            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-
-        $validMail = validNewMail($databasePDO, $_POST["mail"]);
-        $validPass = validNewPassword($_POST["password"]);
-        $validLogin = validNewLogin($databasePDO, $_POST["login"]);
-
-        if ($validMail && $validPass && $validLogin) {
-            $queryError = newUser($databasePDO, $_POST["login"],
-                $_POST["mail"], $_POST["password"]);
-        }
-    }
-} catch (Exception $e) {
-    echo $databaseError;
+if ($DB_ERROR === false && isset($_POST) && $_POST["submit"] === "Sign-in") {
+    $validMail = validNewMail($databasePDO, $_POST["mail"]);
+    $validPass = validNewPassword($_POST["password"]);
+    $validLogin = validNewLogin($databasePDO, $_POST["login"]);
+    if ($validMail && $validPass && $validLogin)
+        $querySuccess = newUser($databasePDO, $_POST["login"],
+            $_POST["mail"], $_POST["password"]);
 }
+else if (isset($_POST["submit"]))
+    $querySuccess = false;
 ?>
 <html lang="en">
     <body>
@@ -34,6 +26,8 @@ try {
         <main>
             <div id="errorPlace">
             <?php
+                if ($DB_ERROR !== false)
+                    echo $DB_ERROR;
                 if (!$validMail)
                     echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
                 if (!$validLogin)
@@ -42,11 +36,10 @@ try {
                 if (!$validPass)
                     echo ("<h2 class='error'>Password should be at least 8 chars and
                     contains at least one letter and one digit</h2>");
-                if ($queryError === false)
-                    echo ("<h2 class='error'>Error during creating new user, please retry</h2>");
-                else if ($queryError === true) {
+                if ($querySuccess === false)
+                    echo ("<h2 class='error'>Error during user creation, please retry</h2>");
+                else if ($querySuccess === true)
                     echo ("<h2 class='success'>Account created</h2>");
-                }
             ?>
             </div>
             <form class="loginForm" method="post" action="signin.php">

@@ -1,7 +1,6 @@
 <?php
 
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
-
 $databaseError = "<p class='error'>Fatal error, cannot access database</p>";
 
 function hash_pw($pw) {
@@ -19,8 +18,7 @@ function authenticate ($databasePDO, $login, $password) {
           AND password LIKE ':password'");
         $query = $query->execute(array(':login' => $login, ':password' => $password));
         return $query;
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
         return false;
     }
 }

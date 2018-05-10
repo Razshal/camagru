@@ -1,3 +1,3 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
-$GLOBALS["httpAddress"] = $DB_IP;
+include_once ("/config/database.php");
+$GLOBALS["httpAddress"] = "127.0.0.1:8080";

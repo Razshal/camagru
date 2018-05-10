@@ -1,7 +1,7 @@
 <?php
 
-include_once ("../controller/tools.php");
-include_once ("../config/site.php");
+include_once ("/controller/tools.php");
+include_once ("/config/site.php");
 
 function sendUserCheckMail ($database, $login, $mail, $token) {
     $token =
@@ -14,18 +14,20 @@ function sendUserCheckMail ($database, $login, $mail, $token) {
         "<a href=\"{$token}\">Validate account</a><br>" .
         "Or to access this page on your web browser {$token}";
     $headers =
-        "From: webmaster@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
-        "Reply-To: webmaster@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
+        "From: noreply@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
+        "Reply-To: noreply@{$GLOBALS["siteAddress"]}.com" . "\r\n" .
         'X-Mailer: PHP/' . phpversion() .
         'MIME-Version: 1.0' . "\r\n" .
         'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
     if (!($success = mail($mail, $subject, $message, $headers))) {
-        $success = false;
-        $database->exec("DELETE FROM user
-        WHERE user.login LIKE '{$login}';");
+        try {
+            $query = $database->prepare("DELETE FROM user WHERE user.login LIKE :login;");
+            $query->execute(array(":login" => $login));
+        } catch (Exception $e) {
+            return false;
+        }
     }
-    var_dump($success);
     return $success;
 }
 
