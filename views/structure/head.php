@@ -1,8 +1,8 @@
 <?php
 session_start();
-include_once ("/model/get_database.php");
-include_once ("/config/database.php");
-include_once ("/controller/tools.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/get_database.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
 
 try {
     if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")

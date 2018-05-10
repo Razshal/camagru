@@ -16,8 +16,8 @@ function authenticate ($databasePDO, $login, $password) {
           SELECT * FROM user 
           WHERE login LIKE ':login' 
           AND password LIKE ':password'");
-        $query = $query->execute(array(':login' => $login, ':password' => $password));
-        return $query;
+        $query->execute(array(':login' => $login, ':password' => $password));
+        return !empty($query->fetchAll());
     } catch (Exception $e) {
         return false;
     }

@@ -1,8 +1,8 @@
 <?php
-include_once ("structure/head.php");
-include_once ("/model/checks.php");
-include_once ("/model/set_database.php");
-include_once ("/config/database.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/set_database.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
 
 $validMail = true;
 $validPass = true;

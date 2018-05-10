@@ -1,22 +1,18 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/get_database.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/model/get_database.php");
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
 
-try {
-    $auth = NULL;
+if ($DB_ERROR === false) {
     if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")
         $_SESSION["user"] = "";
     else if (isset($_POST) && isset($_POST["submit"]) && $_POST["submit"] === "Login"
         && isset($_POST["login"]) && $_POST["login"] != ""
         && isset($_POST["password"]) && $_POST["password"] != ""
-        && ($auth = authenticate($databasePDO, $_POST["login"], $_POST["password"])))
-    {
+        && ($auth = authenticate($databasePDO, $_POST["login"], $_POST["password"]))) {
         $_SESSION["user"] = $_POST["login"];
     }
-} catch (Exception $e) {
-    echo $databaseError;
 }
 ?>
 <html lang="en">
@@ -25,11 +21,12 @@ try {
         <main>
             <div id="errorPlace">
                 <?php
-                if ($auth === false)
+                if (isset($auth) && $auth === false)
                     echo ("<h2 class='error'>Wrong username or account needs verifying</h2>");
-                else if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "") {
+                else if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")
                     echo ("<h2 class='success'>Logged as {$_SESSION["user"]}</h2>");
-                }
+                else if ($DB_ERROR !== false)
+                    echo $DB_ERROR;
                 ?>
             </div>
             <?php
