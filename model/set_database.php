@@ -1,7 +1,8 @@
 <?php
 
-include_once ("/controller/tools.php");
-include_once ("/config/site.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/site.php");
+include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/site.php");
 
 function sendUserCheckMail ($database, $login, $mail, $token) {
     $token =

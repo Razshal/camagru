@@ -1,25 +1,6 @@
 <?php
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/set_database.php");
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
-
-$validMail = true;
-$validPass = true;
-$validLogin = true;
-$querySuccess = 0;
-
-if ($DB_ERROR === false && isset($_POST) && $_POST["submit"] === "Sign-in") {
-    $validMail = validNewMail($databasePDO, $_POST["mail"]);
-    $validPass = validNewPassword($_POST["password"]);
-    $validLogin = validNewLogin($databasePDO, $_POST["login"]);
-    if ($validMail && $validPass && $validLogin)
-        $querySuccess = newUser($databasePDO, $_POST["login"],
-            $_POST["mail"], $_POST["password"]);
-}
-else if (isset($_POST["submit"]))
-    $querySuccess = false;
-?>
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/C_signin.php"); ?>
 <html lang="en">
     <body>
         <?php include("structure/header.php") ?>
@@ -28,17 +9,17 @@ else if (isset($_POST["submit"]))
             <?php
                 if ($DB_ERROR !== false)
                     echo $DB_ERROR;
-                if (!$validMail)
+                if (isset($validMail) && !$validMail)
                     echo ("<h2 class='error'>Mail is already in use or not valid</h2>");
-                if (!$validLogin)
+                if (isset($validLogin) && !$validLogin)
                     echo ("<h2 class='error'>Login is already in use or not valid 
                     (4 chars >= login <= 20 chars)</h2>");
-                if (!$validPass)
+                if (isset($validPass) && !$validPass)
                     echo ("<h2 class='error'>Password should be at least 8 chars and
                     contains at least one letter and one digit</h2>");
-                if ($querySuccess === false)
+                if (isset($querySuccess) && $querySuccess === false)
                     echo ("<h2 class='error'>Error during user creation, please retry</h2>");
-                else if ($querySuccess === true)
+                else if (isset($querySuccess) && $querySuccess === true)
                     echo ("<h2 class='success'>Account created</h2>");
             ?>
             </div>
