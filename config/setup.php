@@ -1,4 +1,10 @@
-<?php ob_start(); ?>
+<?php
+if ($database !== NULL)
+    $success = $database->initiate();
+else
+    $success = false;
+ob_start();
+?>
 <div>
     <h2>Setup tried, Site status :</h2>
     <?php

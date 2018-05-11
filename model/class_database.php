@@ -8,7 +8,8 @@ class Database
 
     public function __construct($DB_DSN, $DB_USER, $DB_PASSWORD, $SITE_ADDRESS)
     {
-        try {
+        try
+        {
             $this->PDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
                 array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             $this->SITE_ADDRESS = $SITE_ADDRESS;
@@ -27,23 +28,16 @@ class Database
             CREATE TABLE IF NOT EXISTS user (
               id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
               login       VARCHAR(20) NOT NULL,
-              isAdmin     INT         NOT NULL DEFAULT 0,
               password    VARCHAR(128),
               mail        VARCHAR(254),
               check_token VARCHAR(128),
+              reset_token VARCHAR(128),
+              reset_date  TIMESTAMP,
               is_verified INT NOT NULL DEFAULT 0,
-              PRIMARY KEY (`id`))
-              ENGINE = InnoDB;
-            CREATE TABLE IF NOT EXISTS password_reset (
-              id              INT           NOT NULL AUTO_INCREMENT UNIQUE,
-              user_id         INT           NOT NULL,
-              check_token     VARCHAR(128)  NOT NULL,
-              creation_date   TIMESTAMP     NOT NULL DEFAULT now(),
-              PRIMARY KEY (`id`),
-              CONSTRAINT fk_pass_reset_user_id
-              FOREIGN KEY (user_id)
-              REFERENCES user (id))
-              ENGINE = InnoDB;
+              PRIMARY KEY (id))
+              ENGINE = InnoDB;");
+
+            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS post (
               id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
               user_id     INT       NOT NULL,
@@ -54,7 +48,9 @@ class Database
               CONSTRAINT fk_user_id
               FOREIGN KEY (user_id)
               REFERENCES user (id))
-              ENGINE = InnoDB;
+              ENGINE = InnoDB;");
+
+            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS comment (
               id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
               post_id      INT          NOT NULL,
@@ -64,7 +60,9 @@ class Database
               CONSTRAINT fk_post_id
               FOREIGN KEY (post_id)
               REFERENCES post (id))
-              ENGINE = InnoDB;
+              ENGINE = InnoDB;");
+
+            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS `like` (
               post_id      INT          NOT NULL,
               user_id      INT          NOT NULL,
@@ -82,67 +80,101 @@ class Database
         return hash("SHA512", $pw);
     }
 
-    private function sendUserCheckMail($login, $mail, $token)
+    private function generate_random_token() {
+        return bin2hex(openssl_random_pseudo_bytes(16));
+    }
+
+    private function sendUserMail($mail, $subject, $message)
     {
-        $token =
-            "http://{$this->SITE_ADDRESS}/index.php" .
-            "?action=verify&user={$login}&token={$token}";
-        $subject = 'Activate your Camagru account';
-        $message =
-            "<div style='
-                text-align: center;
-                background-color: #e98e4e;
-                border-radius: 20px;
-                color: whitesmoke;
-                padding: 30px;
-        '>" .
-            "<h2 style='text-align: center; color: whitesmoke'>Hello {$login}</h2><br>
-        To connect to your new account you need to click on this link<br>" .
-            "<a style='color: whitesmoke' href=\"{$token}\">Validate account</a><br>" .
-            "Or access this page on a web browser<br>{$token}</div>";
         $headers =
             "From: noreply@{$this->SITE_ADDRESS}" . "\r\n" .
             "Reply-To: noreply@{$this->SITE_ADDRESS}" . "\r\n" .
             'X-Mailer: PHP/' . phpversion() .
             'MIME-Version: 1.0' . "\r\n" .
             'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        if (!($success = mail($mail, $subject, $message, $headers))) {
-            try {
-                $query = $this->PDO->prepare("
-                    DELETE FROM user 
-                    WHERE user.login LIKE :login;");
-                $query->execute(array(":login" => $login));
-            } catch (Exception $e) {
-                return false;
-            }
-        }
-        return $success;
+        return mail($mail, $subject, $message, $headers);
     }
 
     public function newUser($login, $mail, $password)
     {
-        try {
+        try
+        {
             $password = $this->hash_pw($password);
-            $token = bin2hex(openssl_random_pseudo_bytes(16));
+            $token = $this->generate_random_token();
             $query = $this->PDO->prepare("
-        INSERT INTO user VALUES 
-        (NULL, :login, 0, :password, :mail, :token, 0);");
+                INSERT INTO user VALUES 
+                (NULL, :login, :password, :mail, :token, NULL, NULL, 0);");
             $success = $query->execute(array(
                 ':login' => $login,
                 ':password' => $password,
                 ':mail' => $mail,
                 ':token' => $token));
-            return $success && $this->sendUserCheckMail($login, $mail, $token);
+            $token =
+                "http://{$this->SITE_ADDRESS}/index.php" .
+                "?action=verify&user={$login}&token={$token}";
+            $message =
+                "<div style='
+                text-align: center;
+                background-color: #e98e4e;
+                border-radius: 20px;
+                color: whitesmoke;
+                padding: 30px;'>" .
+                "<h2 style='text-align: center; color: whitesmoke'>Hello {$login}</h2><br>
+                To connect to your new account you need to click on this link<br>" .
+                "<a style='color: whitesmoke' href=\"{$token}\">Validate account</a><br>" .
+                "Or access this page on a web browser<br>{$token}</div>";
+            if (!$this->sendUserMail($mail, 'Activate your Camagru account', $message))
+            {
+                $query = $this->PDO->prepare("
+                  DELETE FROM user 
+                  WHERE user.login LIKE :login;");
+                $query->execute(array(":login" => $login));
+                return false;
+            }
+            return true;
         } catch (Exception $e) {
             return false;
         }
     }
 
+    public function initiatePasswordReset ($mail) {
+        if (empty($user = $this->get_mail($mail)) || !isset($user['id']))
+            return false;
+        else
+        {
+            $token = $this->generate_random_token();
+            $query = $this->PDO->prepare("
+                UPDATE user 
+                SET reset_token = :token AND reset_date = now() 
+                WHERE mail LIKE :mail");
+            $query->execute(array(':token' => $token, ':mail' => $mail));
+            $query = $query->rowCount();
+            $token =
+                "http://{$this->SITE_ADDRESS}/index.php" .
+                "?action=reset&mail={$mail}&token={$token}";
+            $message =
+                "<div style='
+                text-align: center;
+                background-color: #e98e4e;
+                border-radius: 20px;
+                color: whitesmoke;
+                padding: 30px;'>" .
+                "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
+                Someone asked to reset your password, if it's not you just ignore this email<br>" .
+                "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>" .
+                "Otherwise click to the link to enter your new password</div>";
+            return $query > 0
+                && $this->sendUserMail($mail, 'Password reset', $message);
+        }
+    }
+
     public function verify_user ($login, $token) {
-        try {
+        try
+        {
             if (validChars($login)
                 && !empty($user = $this->get_user($login)[0])
-                && !$user["is_verified"] == 1) {
+                && !$user["is_verified"] == 1)
+            {
                 $query = $this->PDO->prepare("
                     UPDATE user SET is_verified = 1 
                     WHERE login = :login 
@@ -156,10 +188,12 @@ class Database
         } catch (Exception $e) {
             return false;
         }
+        return false;
     }
 
     public function get_user($login) {
-        try {
+        try
+        {
             $query = $this->PDO->prepare("
               SELECT * FROM user WHERE login LIKE :login");
             $query->execute(array(":login" => $login));
@@ -170,7 +204,8 @@ class Database
     }
 
     public function get_mail($mail) {
-        try {
+        try
+        {
             $query = $this->PDO->prepare("
             SELECT * FROM user WHERE mail LIKE :mail");
             $query->execute(array(":mail" => $mail));
@@ -181,7 +216,8 @@ class Database
     }
 
     public function authenticate ($login, $password) {
-        try {
+        try
+        {
             if (!validChars($login) || $login === "" || $password === "")
                 return false;
             $password = $this->hash_pw($password);

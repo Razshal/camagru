@@ -22,8 +22,7 @@ try {
 
 if (isset($_GET) && isset($_GET["action"]))
 {
-    if ($_GET["action"] === "login")
-    {
+    if ($_GET["action"] === "login") {
         if (isset($_POST)
             && isset($_POST["submit"]) && $_POST["submit"] === "Login"
             && isset($_POST["login"]) && isset($_POST["password"])
@@ -33,8 +32,7 @@ if (isset($_GET) && isset($_GET["action"]))
         require ("views/login.php");
     }
 
-    else if ($_GET["action"] === "logout")
-    {
+    else if ($_GET["action"] === "logout") {
         if ($database !== NULL) {
             if (isset($_SESSION)
                 && isset($_SESSION["user"]) && $_SESSION["user"] != "")
@@ -44,17 +42,11 @@ if (isset($_GET) && isset($_GET["action"]))
         die();
     }
 
-    else if ($_GET["action"] === "setup")
-    {
-        if ($database !== NULL)
-            $success = $database->initiate();
-        else
-            $success = false;
+    else if ($_GET["action"] === "setup") {
         require ("config/setup.php");
     }
 
-    else if ($_GET["action"] === "signin")
-    {
+    else if ($_GET["action"] === "signin") {
         if ($database !== NULL && isset($_POST)
             && isset($_POST["submit"])
             && $_POST["submit"] === "Sign-in")
@@ -73,8 +65,7 @@ if (isset($_GET) && isset($_GET["action"]))
         require ("views/signin.php");
     }
 
-    else if ($_GET["action"] === "verify")
-    {
+    else if ($_GET["action"] === "verify") {
         $done = 0;
         if (isset($_GET) && isset($_GET["user"]) && isset($_GET["token"]))
             $done = $database->verify_user($_GET["user"], $_GET["token"]);
@@ -83,11 +74,11 @@ if (isset($_GET) && isset($_GET["action"]))
         require ("views/verify.php");
     }
 
-    else if ($_GET["action"] === "reset")
-    {
-
-
+    else if ($_GET["action"] === "reset") {
+        require ("controller/controller_password_reset.php");
+        require ("views/password_reset.php");
     }
+
     else if ($_GET["action"] === "account") {
         require ("views/account.php");
     }
