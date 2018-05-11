@@ -38,7 +38,8 @@ if (isset($_GET) && isset($_GET["action"])) {
                 && isset($_SESSION["user"]) && $_SESSION["user"] != "")
                 $_SESSION["user"] = "";
         }
-        require ("views/structure/template.php");
+        header('location: index.php');
+        die();
     }
 
     else if ($_GET["action"] === "setup")
