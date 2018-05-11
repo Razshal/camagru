@@ -1,6 +1,4 @@
 <?php
-
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
 
 class Database
@@ -25,7 +23,7 @@ class Database
 
     public function initiate() {
         try {
-            $success = $this->PDO->exec("
+            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS user (
               id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
               login       VARCHAR(20) NOT NULL,
@@ -36,10 +34,6 @@ class Database
               is_verified INT NOT NULL DEFAULT 0,
               PRIMARY KEY (`id`))
               ENGINE = InnoDB;
-            ");
-            var_dump($success);
-
-            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS password_reset (
               id              INT           NOT NULL AUTO_INCREMENT UNIQUE,
               user_id         INT           NOT NULL,
@@ -50,9 +44,6 @@ class Database
               FOREIGN KEY (user_id)
               REFERENCES user (id))
               ENGINE = InnoDB;
-            ");
-
-            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS post (
               id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
               user_id     INT       NOT NULL,
@@ -64,9 +55,6 @@ class Database
               FOREIGN KEY (user_id)
               REFERENCES user (id))
               ENGINE = InnoDB;
-            ");
-
-            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS comment (
               id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
               post_id      INT          NOT NULL,
@@ -77,9 +65,6 @@ class Database
               FOREIGN KEY (post_id)
               REFERENCES post (id))
               ENGINE = InnoDB;
-            ");
-
-            $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS `like` (
               post_id      INT          NOT NULL,
               user_id      INT          NOT NULL,
@@ -89,7 +74,7 @@ class Database
             ");
             return true;
         } catch (Exception $e) {
-            return false;
+            return $e;
         }
     }
 

@@ -11,14 +11,12 @@
         <header>
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
             <a class="headerLink" href="#">Post</a>
-            <a class="headerLink" href="/views/account.php">Account</a>
-            <a class="headerLink" href="/views/login.php"><?php
-                if (!isset($_SESSION) || !isset($_SESSION["user"])
-                    || $_SESSION["user"] === "")
-                    echo("Login");
+            <a class="headerLink" href="/index.php?action=account">Account</a>
+            <?php
+                if (!isset($_SESSION) || !isset($_SESSION["user"]) || $_SESSION["user"] === "")
+                    echo("<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>");
                 else
-                    echo("Logout");?>
-            </a>
+                    echo("<a class=\"headerLink\" href=\"/index.php?action=logout\">Logout</a>");?>
         </header>
         <main>
             <?= $content ?>
@@ -28,5 +26,5 @@
             <h3>made by mfonteni</h3>
         </footer>
     </body>
-
 </html>
+<script src="/views/style/style.js"></script>
