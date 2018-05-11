@@ -1,4 +1,4 @@
-<? ob_start(); ?>
+<?php ob_start(); ?>
 <div>
     <h2>Setup tried, Site status :</h2>
     <?php

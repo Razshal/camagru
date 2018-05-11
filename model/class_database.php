@@ -74,7 +74,7 @@ class Database
             ");
             return true;
         } catch (Exception $e) {
-            return $e;
+            return false;
         }
     }
 
@@ -85,7 +85,7 @@ class Database
     private function sendUserCheckMail($login, $mail, $token)
     {
         $token =
-            "http://{$this->SITE_ADDRESS}/views/verify.php" .
+            "http://{$this->SITE_ADDRESS}/index.php" .
             "?action=verify&user={$login}&token={$token}";
         $subject = 'Activate your Camagru account';
         $message =
@@ -101,8 +101,8 @@ class Database
             "<a style='color: whitesmoke' href=\"{$token}\">Validate account</a><br>" .
             "Or access this page on a web browser<br>{$token}</div>";
         $headers =
-            "From: noreply@{$this->SITE_ADDRESS}.com" . "\r\n" .
-            "Reply-To: noreply@{$this->SITE_ADDRESS}.com" . "\r\n" .
+            "From: noreply@{$this->SITE_ADDRESS}" . "\r\n" .
+            "Reply-To: noreply@{$this->SITE_ADDRESS}" . "\r\n" .
             'X-Mailer: PHP/' . phpversion() .
             'MIME-Version: 1.0' . "\r\n" .
             'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -138,16 +138,24 @@ class Database
         }
     }
 
-    public function verify_user ($login) {
-        if (validChars($login) && !empty($this->get_user($login))) {
-            $query = $this->PDO->prepare("
-            UPDATE user 
-            SET is_verified = 1 
-            WHERE login = :login");
-            $query->execute(array(':login' => $_GET["user"]));
-            return (!empty($query->fetchAll()));
+    public function verify_user ($login, $token) {
+        try {
+            if (validChars($login)
+                && !empty($user = $this->get_user($login)[0])
+                && !$user["is_verified"] == 1) {
+                $query = $this->PDO->prepare("
+                    UPDATE user SET is_verified = 1 
+                    WHERE login = :login 
+                    AND check_token = :token");
+                $query->execute(array(
+                    ':login' => $login,
+                    ':token' => $token));
+                return ($query->rowCount() > 0);
+            } else if (isset($user) && $user["is_verified"] == 1)
+                return true;
+        } catch (Exception $e) {
+            return false;
         }
-        return false;
     }
 
     public function get_user($login) {
