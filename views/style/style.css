@@ -93,6 +93,10 @@ a.link {
     font-size: 15px;
 }
 
+.loginForm a {
+    text-decoration: none;
+}
+
 /***** Responsive ****/
 
 @media all and (max-width: 600px) {
@@ -143,7 +147,10 @@ footer {
     background-color: #66b9bf;
 }
 
-header, footer, a.headerLink, form,
+header,
+footer,
+a.headerLink, .loginForm a,
+form,
 input[type='text'],
 input[type='password'],
 input[type='email'],

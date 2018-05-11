@@ -1,18 +1,19 @@
 <?php
 require_once ($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
-require_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
-require_once ($_SERVER["DOCUMENT_ROOT"] . "/model/get_database.php");
-require_once ($_SERVER["DOCUMENT_ROOT"] . "/controller/tools.php");
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/config/site.php");
 
-if ($DB_ERROR === false) {
-    if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")
+if ($database !== NULL) {
+    if (isset($_SESSION)
+        && isset($_SESSION["user"]) && $_SESSION["user"] != "")
         $_SESSION["user"] = "";
-    else if (isset($_POST) && isset($_POST["submit"]) && $_POST["submit"] === "Login"
-        && isset($_POST["login"]) && $_POST["login"] != ""
-        && isset($_POST["password"]) && $_POST["password"] != ""
-        && ($auth = authenticate($databasePDO, $_POST["login"], $_POST["password"]))) {
+    else if
+    (
+        isset($_POST)
+        && isset($_POST["submit"]) && $_POST["submit"] === "Login"
+        && isset($_POST["login"]) && isset($_POST["password"])
+        && ($auth = $database->authenticate($_POST["login"], $_POST["password"]))
+    )
         $_SESSION["user"] = $_POST["login"];
-    }
 }
 ?>
 <html lang="en">
@@ -23,9 +24,10 @@ if ($DB_ERROR === false) {
                 <?php
                 if (isset($auth) && $auth === false)
                     echo ("<h2 class='error'>Wrong username or account needs verifying</h2>");
-                else if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")
+                else if (isset($_SESSION) && isset($_SESSION["user"])
+                    && $_SESSION["user"] != "")
                     echo ("<h2 class='success'>Logged as {$_SESSION["user"]}</h2>");
-                else if ($DB_ERROR !== false)
+                else if ($database === NULL)
                     echo $DB_ERROR;
                 ?>
             </div>
@@ -39,6 +41,7 @@ if ($DB_ERROR === false) {
                 <input type="password" placeholder="Password" title="password" name="password"><br/>
                 <input class="submit" type="submit" title="send" name="submit" value="Login"><br/>
                 <a class="link" href="signin.php">Don't have an account ? Sign in</a>
+                <a class="link" href="password_reset.php">Forgot your password ? Reset password</a>
             </form>
             <?php
             }?>

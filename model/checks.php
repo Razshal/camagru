@@ -1,8 +1,8 @@
 <?php
 
-function validNewMail ($databasePDO, $mail) {
+function validNewMail ($database, $mail) {
     return isset($mail) && filter_var($mail, FILTER_VALIDATE_EMAIL)
-        && empty(get_mail($databasePDO, $mail));
+        && empty($database->get_mail($mail));
 }
 
 function validNewPassword ($password) {
@@ -11,9 +11,9 @@ function validNewPassword ($password) {
         && preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password);
 }
 
-function validNewLogin ($databasePDO, $login) {
+function validNewLogin ($database, $login) {
     return isset($login) && strlen($login) >= 4
-        && empty(get_user($databasePDO, $login));
+        && empty($database->get_user($login));
 }
 
 function validChars ($login) {
@@ -22,11 +22,3 @@ function validChars ($login) {
         return false;
     return true;
 }
-
-/*
-function is_there_admins($database_pdo)
-{
-    return !!$database_pdo->query("
-              SELECT * FROM user WHERE user.isAdmin LIKE 1");
-}
-*/

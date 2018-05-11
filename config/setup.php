@@ -1,7 +1,7 @@
 <?php
 /**
  * capable de créer ou recréer le schéma de la base de données,
- * en utilisant les infos contenues dans le fichier config/database.php.
+ * en utilisant les infos contenues dans le fichier config/class_database.php.
  */
 
 include_once($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
@@ -18,6 +18,19 @@ if ($DB_ERROR === false) {
       check_token VARCHAR(128),
       is_verified INT NOT NULL DEFAULT 0,
       PRIMARY KEY (`id`))
+      ENGINE = InnoDB;
+    ");
+
+    $success += $databasePDO->exec("
+    CREATE TABLE IF NOT EXISTS password_reset (
+      id              INT           NOT NULL AUTO_INCREMENT UNIQUE,
+      user_id         INT           NOT NULL,
+      check_token     VARCHAR(128)  NOT NULL,
+      creation_date   TIMESTAMP     NOT NULL DEFAULT now(),
+      PRIMARY KEY (`id`),
+      CONSTRAINT fk_user_id
+      FOREIGN KEY (user_id)
+      REFERENCES user (id))
       ENGINE = InnoDB;
     ");
 
