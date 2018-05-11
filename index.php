@@ -20,13 +20,15 @@ try {
 
 /************* Router ************/
 
-if (isset($_GET) && isset($_GET["action"])) {
+if (isset($_GET) && isset($_GET["action"]))
+{
     if ($_GET["action"] === "login")
     {
         if (isset($_POST)
             && isset($_POST["submit"]) && $_POST["submit"] === "Login"
             && isset($_POST["login"]) && isset($_POST["password"])
-            && ($auth = $database->authenticate($_POST["login"], $_POST["password"])))
+            && ($auth = $database->authenticate(
+                $_POST["login"], $_POST["password"])))
             $_SESSION["user"] = $_POST["login"];
         require ("views/login.php");
     }
@@ -51,9 +53,11 @@ if (isset($_GET) && isset($_GET["action"])) {
         require ("config/setup.php");
     }
 
-    else if ($_GET["action"] === "signin") {
+    else if ($_GET["action"] === "signin")
+    {
         if ($database !== NULL && isset($_POST)
-            && isset($_POST["submit"]) && $_POST["submit"] === "Sign-in")
+            && isset($_POST["submit"])
+            && $_POST["submit"] === "Sign-in")
         {
             $validMail = validNewMail($database, $_POST["mail"]);
             $validPass = validNewPassword($_POST["password"]);
@@ -77,6 +81,15 @@ if (isset($_GET) && isset($_GET["action"])) {
         else
             $done = false;
         require ("views/verify.php");
+    }
+
+    else if ($_GET["action"] === "reset")
+    {
+
+
+    }
+    else if ($_GET["action"] === "account") {
+        require ("views/account.php");
     }
 }
 require ("views/structure/template.php");

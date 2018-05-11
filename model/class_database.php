@@ -40,7 +40,7 @@ class Database
               check_token     VARCHAR(128)  NOT NULL,
               creation_date   TIMESTAMP     NOT NULL DEFAULT now(),
               PRIMARY KEY (`id`),
-              CONSTRAINT fk_user_id
+              CONSTRAINT fk_pass_reset_user_id
               FOREIGN KEY (user_id)
               REFERENCES user (id))
               ENGINE = InnoDB;
@@ -160,9 +160,10 @@ class Database
 
     public function get_user($login) {
         try {
-            $query = $this->PDO->query("
-            SELECT * FROM user WHERE login LIKE '{$login}'");
-            return ($query == NULL ? false : $query->fetchAll());
+            $query = $this->PDO->prepare("
+              SELECT * FROM user WHERE login LIKE :login");
+            $query->execute(array(":login" => $login));
+            return ($query->fetchAll());
         } catch (Exception $e) {
             return false;
         }
@@ -170,9 +171,10 @@ class Database
 
     public function get_mail($mail) {
         try {
-            $query = $this->PDO->query("
-            SELECT * FROM user WHERE mail LIKE '{$mail}'");
-            return ($query == NULL ? false : $query->fetchAll());
+            $query = $this->PDO->prepare("
+            SELECT * FROM user WHERE mail LIKE :mail");
+            $query->execute(array(":mail" => $mail));
+            return ($query->fetchAll());
         } catch (Exception $e) {
             return false;
         }
