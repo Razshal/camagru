@@ -19,6 +19,80 @@ class Database
         }
     }
 
+    public function userErrorMessage () {
+        return "<p class='error'>Fatal error, cannot access database</p>";
+    }
+
+    public function initiate() {
+        try {
+            $success = $this->PDO->exec("
+            CREATE TABLE IF NOT EXISTS user (
+              id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
+              login       VARCHAR(20) NOT NULL,
+              isAdmin     INT         NOT NULL DEFAULT 0,
+              password    VARCHAR(128),
+              mail        VARCHAR(254),
+              check_token VARCHAR(128),
+              is_verified INT NOT NULL DEFAULT 0,
+              PRIMARY KEY (`id`))
+              ENGINE = InnoDB;
+            ");
+            var_dump($success);
+
+            $this->PDO->exec("
+            CREATE TABLE IF NOT EXISTS password_reset (
+              id              INT           NOT NULL AUTO_INCREMENT UNIQUE,
+              user_id         INT           NOT NULL,
+              check_token     VARCHAR(128)  NOT NULL,
+              creation_date   TIMESTAMP     NOT NULL DEFAULT now(),
+              PRIMARY KEY (`id`),
+              CONSTRAINT fk_user_id
+              FOREIGN KEY (user_id)
+              REFERENCES user (id))
+              ENGINE = InnoDB;
+            ");
+
+            $this->PDO->exec("
+            CREATE TABLE IF NOT EXISTS post (
+              id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
+              user_id     INT       NOT NULL,
+              image       VARCHAR(100),
+              description VARCHAR(256),
+              post_date   TIMESTAMP NOT NULL DEFAULT now(),
+              PRIMARY KEY (id),
+              CONSTRAINT fk_user_id
+              FOREIGN KEY (user_id)
+              REFERENCES user (id))
+              ENGINE = InnoDB;
+            ");
+
+            $this->PDO->exec("
+            CREATE TABLE IF NOT EXISTS comment (
+              id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
+              post_id      INT          NOT NULL,
+              `text`       VARCHAR(256) NOT NULL,
+              comment_date TIMESTAMP    NOT NULL DEFAULT now(),
+              PRIMARY KEY (id),
+              CONSTRAINT fk_post_id
+              FOREIGN KEY (post_id)
+              REFERENCES post (id))
+              ENGINE = InnoDB;
+            ");
+
+            $this->PDO->exec("
+            CREATE TABLE IF NOT EXISTS `like` (
+              post_id      INT          NOT NULL,
+              user_id      INT          NOT NULL,
+              CONSTRAINT fk_like_post_id FOREIGN KEY (post_id) REFERENCES post(id),
+              CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
+              ENGINE = InnoDB;
+            ");
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     private function hash_pw($pw) {
         return hash("SHA512", $pw);
     }

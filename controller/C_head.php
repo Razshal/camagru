@@ -7,5 +7,5 @@ try {
         if (empty($database->get_user($_SESSION["user"])))
             $_SESSION["user"] = "";
 } catch (Exception $e) {
-    echo $databaseError;
+    echo $database->userErrorMessage();
 }

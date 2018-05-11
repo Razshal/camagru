@@ -7,69 +7,10 @@
 include_once($_SERVER["DOCUMENT_ROOT"] . "/views/structure/head.php");
 include_once ($_SERVER["DOCUMENT_ROOT"] . "/config/database.php");
 
-if ($DB_ERROR === false) {
-    $success += $databasePDO->exec("
-    CREATE TABLE IF NOT EXISTS user (
-      id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
-      login       VARCHAR(20) NOT NULL,
-      isAdmin     INT         NOT NULL DEFAULT 0,
-      password    VARCHAR(128),
-      mail        VARCHAR(254),
-      check_token VARCHAR(128),
-      is_verified INT NOT NULL DEFAULT 0,
-      PRIMARY KEY (`id`))
-      ENGINE = InnoDB;
-    ");
-
-    $success += $databasePDO->exec("
-    CREATE TABLE IF NOT EXISTS password_reset (
-      id              INT           NOT NULL AUTO_INCREMENT UNIQUE,
-      user_id         INT           NOT NULL,
-      check_token     VARCHAR(128)  NOT NULL,
-      creation_date   TIMESTAMP     NOT NULL DEFAULT now(),
-      PRIMARY KEY (`id`),
-      CONSTRAINT fk_user_id
-      FOREIGN KEY (user_id)
-      REFERENCES user (id))
-      ENGINE = InnoDB;
-    ");
-
-    $success += $databasePDO->exec("
-    CREATE TABLE IF NOT EXISTS post (
-      id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
-      user_id     INT       NOT NULL,
-      image       VARCHAR(100),
-      description VARCHAR(256),
-      post_date   TIMESTAMP NOT NULL DEFAULT now(),
-      PRIMARY KEY (id),
-      CONSTRAINT fk_user_id
-      FOREIGN KEY (user_id)
-      REFERENCES user (id))
-      ENGINE = InnoDB;
-    ");
-
-    $success += $databasePDO->exec("
-    CREATE TABLE IF NOT EXISTS comment (
-      id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
-      post_id      INT          NOT NULL,
-      `text`       VARCHAR(256) NOT NULL,
-      comment_date TIMESTAMP    NOT NULL DEFAULT now(),
-      PRIMARY KEY (id),
-      CONSTRAINT fk_post_id
-      FOREIGN KEY (post_id)
-      REFERENCES post (id))
-      ENGINE = InnoDB;
-    ");
-
-    $success = $databasePDO->exec("
-    CREATE TABLE IF NOT EXISTS `like` (
-      post_id      INT          NOT NULL,
-      user_id      INT          NOT NULL,
-      CONSTRAINT fk_like_post_id FOREIGN KEY (post_id) REFERENCES post(id),
-      CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
-      ENGINE = InnoDB;
-    ");
-}
+if ($database !== NULL)
+    $success = $database->initiate();
+else
+    $success = false;
 ?>
 <html lang="en">
     <body>
@@ -78,10 +19,11 @@ if ($DB_ERROR === false) {
             <div>
                 <h2>Setup tried, Site status :</h2>
                 <?php
-                if ($DB_ERROR === false)
+                if ($success === true)
                     echo ("<p class='success'>Website is ok</p>");
-                else if ($DB_ERROR !== false)
-                    echo $DB_ERROR;?>
+                else if ($success !== false)
+                    echo $DB_ERROR;
+                ?>
             </div>
         </main>
     </body>
