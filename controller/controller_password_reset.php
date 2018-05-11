@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
     && $_POST["submit"] === "Reset"
-    && !empty($user = $database->get_mail($_POST["email"])))
+    && !empty($user = $database->get_mail($_POST["mail"])))
 {
     if ($database->initiatePasswordReset($_POST["mail"]))
         $done = "<h2 class='success'>Reset account mail sent</h2>";

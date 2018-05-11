@@ -84,6 +84,18 @@ class Database
         return bin2hex(openssl_random_pseudo_bytes(16));
     }
 
+    public function get_mail($mail) {
+        try
+        {
+            $query = $this->PDO->prepare("
+            SELECT * FROM user WHERE mail LIKE :mail");
+            $query->execute(array(":mail" => $mail));
+            return ($query->fetchAll());
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     private function sendUserMail($mail, $subject, $message)
     {
         $headers =
@@ -104,7 +116,7 @@ class Database
             $query = $this->PDO->prepare("
                 INSERT INTO user VALUES 
                 (NULL, :login, :password, :mail, :token, NULL, NULL, 0);");
-            $success = $query->execute(array(
+            $query->execute(array(
                 ':login' => $login,
                 ':password' => $password,
                 ':mail' => $mail,
@@ -138,33 +150,40 @@ class Database
     }
 
     public function initiatePasswordReset ($mail) {
-        if (empty($user = $this->get_mail($mail)) || !isset($user['id']))
-            return false;
-        else
+        try
         {
-            $token = $this->generate_random_token();
-            $query = $this->PDO->prepare("
-                UPDATE user 
-                SET reset_token = :token AND reset_date = now() 
-                WHERE mail LIKE :mail");
-            $query->execute(array(':token' => $token, ':mail' => $mail));
-            $query = $query->rowCount();
-            $token =
-                "http://{$this->SITE_ADDRESS}/index.php" .
-                "?action=reset&mail={$mail}&token={$token}";
-            $message =
-                "<div style='
+            if (empty($user = $this->get_mail($mail)[0]) || !isset($user['id']))
+            {
+                return false;
+            }
+            else
+            {
+                $token = $this->generate_random_token();
+                $query = $this->PDO->prepare("
+                    UPDATE user 
+                    SET reset_token = :token AND reset_date = now() 
+                    WHERE mail LIKE :mail");
+                $query->execute(array(':token' => $token, ':mail' => $mail));
+                $query = $query->rowCount();
+                $token =
+                    "http://{$this->SITE_ADDRESS}/index.php" .
+                    "?action=reset&mail={$mail}&token={$token}";
+                $message =
+                    "<div style='
                 text-align: center;
                 background-color: #e98e4e;
                 border-radius: 20px;
                 color: whitesmoke;
                 padding: 30px;'>" .
-                "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
+                    "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
                 Someone asked to reset your password, if it's not you just ignore this email<br>" .
-                "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>" .
-                "Otherwise click to the link to enter your new password</div>";
-            return $query > 0
-                && $this->sendUserMail($mail, 'Password reset', $message);
+                    "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>" .
+                    "Otherwise click to the link to enter your new password</div>";
+                return $query > 0
+                    && $this->sendUserMail($mail, 'Password reset', $message);
+            }
+        } catch (Exception $e) {
+            return false;
         }
     }
 
@@ -203,17 +222,7 @@ class Database
         }
     }
 
-    public function get_mail($mail) {
-        try
-        {
-            $query = $this->PDO->prepare("
-            SELECT * FROM user WHERE mail LIKE :mail");
-            $query->execute(array(":mail" => $mail));
-            return ($query->fetchAll());
-        } catch (Exception $e) {
-            return false;
-        }
-    }
+
 
     public function authenticate ($login, $password) {
         try
