@@ -1,18 +1,7 @@
-<? ob_start(); ?>
-<div id="errorPlace">
-    <?php
-    if (isset($auth) && $auth === false)
-        echo ("<h2 class='error'>Wrong username or account needs verifying</h2>");
-    else if (isset($_SESSION) && isset($_SESSION["user"])
-        && $_SESSION["user"] != "")
-        echo ("<h2 class='success'>Logged as {$_SESSION["user"]}</h2>");
-    else if ($database === NULL)
-        echo $DB_ERROR;
-    ?>
-</div>
-<?php
+<?php ob_start();
 if (!isset($_SESSION) || !isset($_SESSION["user"])
-    || $_SESSION["user"] === "") {
+    || $_SESSION["user"] === "")
+{
     ?>
     <form class="loginForm" method="post" action="/index.php?action=login">
         <p>Login</p><br/>

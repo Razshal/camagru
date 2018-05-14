@@ -18,6 +18,9 @@ try {
     echo "<h1 class='error'>Fatal database error</h1>";
 }
 
+if ($database === NULL)
+    $info = $DB_ERROR;
+
 /************* Router ************/
 
 if (isset($_GET) && isset($_GET["action"]))
@@ -29,9 +32,8 @@ if (isset($_GET) && isset($_GET["action"]))
             && ($auth = $database->authenticate(
                 $_POST["login"], $_POST["password"])))
             $_SESSION["user"] = $_POST["login"];
-        require ("views/login.php");
+        require("controller/c_login.php");
     }
-
     else if ($_GET["action"] === "logout") {
         if ($database !== NULL) {
             if (isset($_SESSION)
@@ -41,30 +43,12 @@ if (isset($_GET) && isset($_GET["action"]))
         header('location: index.php');
         die();
     }
-
     else if ($_GET["action"] === "setup") {
         require ("config/setup.php");
     }
-
     else if ($_GET["action"] === "signin") {
-        if ($database !== NULL && isset($_POST)
-            && isset($_POST["submit"])
-            && $_POST["submit"] === "Sign-in")
-        {
-            $validMail = validNewMail($database, $_POST["mail"]);
-            $validPass = validNewPassword($_POST["password"]);
-            $validLogin = validNewLogin($database, $_POST["login"]);
-            if ($validMail && $validPass && $validLogin)
-            {
-                $querySuccess = $database->newUser($_POST["login"],
-                    $_POST["mail"], $_POST["password"]);
-            }
-        }
-        else if (isset($_POST["submit"]))
-            $querySuccess = false;
-        require ("views/signin.php");
+        require ("controller/c_signin.php");
     }
-
     else if ($_GET["action"] === "verify") {
         $done = 0;
         if (isset($_GET) && isset($_GET["user"]) && isset($_GET["token"]))
@@ -73,12 +57,10 @@ if (isset($_GET) && isset($_GET["action"]))
             $done = false;
         require ("views/verify.php");
     }
-
     else if ($_GET["action"] === "reset") {
-        require ("controller/controller_password_reset.php");
-        require ("views/password_reset.php");
-    }
+        require("controller/c_password_reset.php");
 
+    }
     else if ($_GET["action"] === "account") {
         require ("views/account.php");
     }

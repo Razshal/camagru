@@ -8,6 +8,7 @@ if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
     else
         $done = "<h2 class='error'>Unable to send reset mail, 
         check if your mail is valid</h2>";
+    require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
 }
 else if (isset($_GET) && isset($_GET["token"]) && isset($_GET["mail"]))
 {
@@ -17,3 +18,5 @@ else if (isset($_GET) && isset($_GET["token"]) && isset($_GET["mail"]))
         var_dump($user["reset_date"]);
     }
 }
+else
+    require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");

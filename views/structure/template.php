@@ -19,6 +19,11 @@
                     echo("<a class=\"headerLink\" href=\"/index.php?action=logout\">Logout</a>");?>
         </header>
         <main>
+            <div id="errorPlace">
+                <?php if (isset($info))
+                    echo $info;
+                ?>
+            </div>
             <?= $content ?>
         </main>
         <footer>

@@ -18,10 +18,6 @@ class Database
         }
     }
 
-    public function userErrorMessage () {
-        return "<p class='error'>Fatal error, cannot access database</p>";
-    }
-
     public function initiate() {
         try {
             $this->PDO->exec("
@@ -82,6 +78,29 @@ class Database
 
     private function generate_random_token() {
         return bin2hex(openssl_random_pseudo_bytes(16));
+    }
+
+    public function validNewMail ($mail) {
+        return isset($mail) && filter_var($mail, FILTER_VALIDATE_EMAIL)
+            && empty($this->get_mail($mail));
+    }
+
+    public function validNewPassword ($password) {
+        return isset($password)
+            && strlen($password) >= 8
+            && preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password);
+    }
+
+    public function validNewLogin ($login) {
+        return isset($login) && strlen($login) >= 4
+            && empty($this->get_user($login));
+    }
+
+    public function validChars ($login) {
+        /*if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $login))*/
+        if (preg_match('/[\\\]/', $login))
+            return false;
+        return true;
     }
 
     public function get_mail($mail) {
@@ -190,7 +209,7 @@ class Database
     public function verify_user ($login, $token) {
         try
         {
-            if (validChars($login)
+            if ($this->validChars($login)
                 && !empty($user = $this->get_user($login)[0])
                 && !$user["is_verified"] == 1)
             {
@@ -221,8 +240,6 @@ class Database
             return false;
         }
     }
-
-
 
     public function authenticate ($login, $password) {
         try
