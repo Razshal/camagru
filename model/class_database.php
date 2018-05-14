@@ -1,5 +1,4 @@
 <?php
-include_once ($_SERVER["DOCUMENT_ROOT"] . "/model/checks.php");
 
 class Database
 {
@@ -244,7 +243,7 @@ class Database
     public function authenticate ($login, $password) {
         try
         {
-            if (!validChars($login) || $login === "" || $password === "")
+            if (!$this->validChars($login) || $login === "" || $password === "")
                 return false;
             $password = $this->hash_pw($password);
             $query = $this->PDO->prepare("

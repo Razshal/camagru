@@ -3,19 +3,19 @@ session_start();
 require_once ("config/database.php");
 require_once ("config/site.php");
 require_once ("model/class_database.php");
-require_once ("model/checks.php");
 
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
 
 try {
     $database = new Database($DB_DSN, $DB_USER, $DB_PASSWORD, $SITE_ADDRESS);
-    if (isset($_SESSION) && isset($_SESSION["user"]) && $_SESSION["user"] != "")
-        if (empty($database->get_user($_SESSION["user"])))
+    if (isset($_SESSION) && isset($_SESSION["user"])
+        && $_SESSION["user"] != ""
+        && $database != NULL && empty($database->get_user($_SESSION["user"])))
             $_SESSION["user"] = "";
 } catch (Exception $e) {
     $database = NULL;
-    echo "<h1 class='error'>Fatal database error</h1>";
+    $info = "<h1 class='error'>Fatal database error</h1><br>";
 }
 
 if ($database === NULL)
@@ -32,7 +32,7 @@ if (isset($_GET) && isset($_GET["action"]))
             && ($auth = $database->authenticate(
                 $_POST["login"], $_POST["password"])))
             $_SESSION["user"] = $_POST["login"];
-        require("controller/c_login.php");
+        require("controller/login.php");
     }
     else if ($_GET["action"] === "logout") {
         if ($database !== NULL) {
@@ -47,18 +47,18 @@ if (isset($_GET) && isset($_GET["action"]))
         require ("config/setup.php");
     }
     else if ($_GET["action"] === "signin") {
-        require ("controller/c_signin.php");
+        require("controller/signin.php");
     }
     else if ($_GET["action"] === "verify") {
         $done = 0;
-        if (isset($_GET) && isset($_GET["user"]) && isset($_GET["token"]))
-            $done = $database->verify_user($_GET["user"], $_GET["token"]);
+        if (isset($_GET["user"]) && isset($_GET["token"])
+            && $database->verify_user($_GET["user"], $_GET["token"]))
+            $info = $info . ("<h2 class='success'>Account activated</h2><br>");
         else
-            $done = false;
-        require ("views/verify.php");
+            $info = $info . ("<h2 class='error'>Error wrong token/login</h2><br>");;
     }
     else if ($_GET["action"] === "reset") {
-        require("controller/c_password_reset.php");
+        require("controller/password_reset.php");
 
     }
     else if ($_GET["action"] === "account") {

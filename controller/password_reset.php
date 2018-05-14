@@ -10,12 +10,13 @@ if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
         check if your mail is valid</h2>";
     require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
 }
-else if (isset($_GET) && isset($_GET["token"]) && isset($_GET["mail"]))
+else if (isset($_GET["token"]) && isset($_GET["mail"]))
 {
-    if (!empty($user = $database->get_mail($_GET["mail"]))
+    if (!empty($user = $database->get_mail($_GET["mail"])[0])
         && $user["check_token"] === $_GET["token"])
     {
         var_dump($user["reset_date"]);
+        require ($_SERVER["DOCUMENT_ROOT"] . "/views/chose_new_password.php");
     }
 }
 else
