@@ -1,14 +1,14 @@
 <?php
-if ($database !== NULL && isset($_POST)
+if ($userManager !== NULL && isset($_POST)
     && isset($_POST["submit"])
     && $_POST["submit"] === "Sign-in")
 {
-    $validMail = $database->validNewMail($_POST["mail"]);
-    $validPass = $database->validNewPassword($_POST["password"]);
-    $validLogin = $database->validNewLogin($_POST["login"]);
+    $validMail = $userManager->validNewMail($_POST["mail"]);
+    $validPass = $userManager->validNewPassword($_POST["password"]);
+    $validLogin = $userManager->validNewLogin($_POST["login"]);
     if ($validMail && $validPass && $validLogin)
     {
-        $querySuccess = $database->newUser($_POST["login"],
+        $querySuccess = $userManager->newUser($_POST["login"],
             $_POST["mail"], $_POST["password"]);
     }
 }

@@ -1,15 +1,6 @@
 <?php
-if ($database !== NULL)
-    $success = $database->initiate();
+if ($userManager !== NULL && $success = $userManager->initiate())
+    $info = $info . "<p class='success'>Website is ok</p><br>";
 else
-    $success = false;
-ob_start();
-?>
-<div>
-    <h2>Setup tried</h2>
-    <?php
-    if ($success === true)
-        $info = $info . "<p class='success'>Website is ok</p>";
-    ?>
-</div>
-<?php $content = ob_get_clean(); ?>
+    $info = $info . "<p class='error'>Error during database init</p><br>";
+$content = "";

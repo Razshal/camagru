@@ -1,4 +1,5 @@
-<?php ob_start();
+<?php
+ob_start();
 if (!isset($_SESSION) || !isset($_SESSION["user"])
     || $_SESSION["user"] === "")
 {
@@ -13,6 +14,5 @@ if (!isset($_SESSION) || !isset($_SESSION["user"])
     </form>
     <?php
 }
-$content = ob_get_clean();
-?>
+$content = ob_get_clean(); ?>
 

@@ -1,115 +1,52 @@
 <?php
 
-class Database
+require_once ($_SERVER["DOCUMENT_ROOT"] . "/model/DatabaseManager.php");
+
+class UserManager extends DatabaseManager
 {
-    private $PDO = NULL;
-    private $SITE_ADDRESS = NULL;
-
-    public function __construct($DB_DSN, $DB_USER, $DB_PASSWORD, $SITE_ADDRESS)
+    private function hash_pw($pw)
     {
-        try
-        {
-            $this->PDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
-                array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-            $this->SITE_ADDRESS = $SITE_ADDRESS;
-        } catch (Exception $exception) {
-            throw new Exception("Cannot connect to database");
-        }
-    }
-
-    public function initiate() {
-        try {
-            $this->PDO->exec("
-            CREATE TABLE IF NOT EXISTS user (
-              id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
-              login       VARCHAR(20) NOT NULL,
-              password    VARCHAR(128),
-              mail        VARCHAR(254),
-              check_token VARCHAR(128),
-              reset_token VARCHAR(128),
-              reset_date  TIMESTAMP,
-              is_verified INT NOT NULL DEFAULT 0,
-              PRIMARY KEY (id))
-              ENGINE = InnoDB;");
-
-            $this->PDO->exec("
-            CREATE TABLE IF NOT EXISTS post (
-              id          INT       NOT NULL AUTO_INCREMENT UNIQUE,
-              user_id     INT       NOT NULL,
-              image       VARCHAR(100),
-              description VARCHAR(256),
-              post_date   TIMESTAMP NOT NULL DEFAULT now(),
-              PRIMARY KEY (id),
-              CONSTRAINT fk_user_id
-              FOREIGN KEY (user_id)
-              REFERENCES user (id))
-              ENGINE = InnoDB;");
-
-            $this->PDO->exec("
-            CREATE TABLE IF NOT EXISTS comment (
-              id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
-              post_id      INT          NOT NULL,
-              `text`       VARCHAR(256) NOT NULL,
-              comment_date TIMESTAMP    NOT NULL DEFAULT now(),
-              PRIMARY KEY (id),
-              CONSTRAINT fk_post_id
-              FOREIGN KEY (post_id)
-              REFERENCES post (id))
-              ENGINE = InnoDB;");
-
-            $this->PDO->exec("
-            CREATE TABLE IF NOT EXISTS `like` (
-              post_id      INT          NOT NULL,
-              user_id      INT          NOT NULL,
-              CONSTRAINT fk_like_post_id FOREIGN KEY (post_id) REFERENCES post(id),
-              CONSTRAINT fk_like_user_id FOREIGN KEY (user_id) REFERENCES user(id))
-              ENGINE = InnoDB;
-            ");
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    private function hash_pw($pw) {
         return hash("SHA512", $pw);
     }
 
-    private function generate_random_token() {
-        return bin2hex(openssl_random_pseudo_bytes(16));
-    }
-
-    public function validNewMail ($mail) {
+    public function validNewMail($mail)
+    {
         return isset($mail) && filter_var($mail, FILTER_VALIDATE_EMAIL)
             && empty($this->get_mail($mail));
     }
 
-    public function validNewPassword ($password) {
+    public function validNewPassword($password)
+    {
         return isset($password)
             && strlen($password) >= 8
             && preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password);
     }
 
-    public function validNewLogin ($login) {
+    public function validNewLogin($login)
+    {
         return isset($login) && strlen($login) >= 4
             && empty($this->get_user($login));
     }
 
-    public function validChars ($login) {
+    public function validChars($login)
+    {
         /*if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $login))*/
         if (preg_match('/[\\\]/', $login))
             return false;
         return true;
     }
 
-    public function get_mail($mail) {
+    public function get_mail($mail)
+    {
         try
         {
             $query = $this->PDO->prepare("
             SELECT * FROM user WHERE mail LIKE :mail");
             $query->execute(array(":mail" => $mail));
             return ($query->fetchAll());
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
     }
@@ -133,7 +70,7 @@ class Database
             $token = $this->generate_random_token();
             $query = $this->PDO->prepare("
                 INSERT INTO user VALUES 
-                (NULL, :login, :password, :mail, :token, NULL, NULL, 0);");
+                (NULL, :login, :password, :mail, :token, NULL, NULL, NULL, 0);");
             $query->execute(array(
                 ':login' => $login,
                 ':password' => $password,
@@ -167,7 +104,7 @@ class Database
         }
     }
 
-    public function initiatePasswordReset ($mail) {
+    public function initiatePasswordReset($mail) {
         try
         {
             if (empty($user = $this->get_mail($mail)[0]) || !isset($user['id']))
@@ -177,6 +114,7 @@ class Database
             else
             {
                 $token = $this->generate_random_token();
+                var_dump($token);
                 $query = $this->PDO->prepare("
                     UPDATE user 
                     SET reset_token = :token AND reset_date = now() 
@@ -188,24 +126,27 @@ class Database
                     "?action=reset&mail={$mail}&token={$token}";
                 $message =
                     "<div style='
-                text-align: center;
-                background-color: #e98e4e;
-                border-radius: 20px;
-                color: whitesmoke;
-                padding: 30px;'>" .
+                    text-align: center;
+                    background-color: #e98e4e;
+                    border-radius: 20px;
+                    color: whitesmoke;
+                    padding: 30px;'>" .
                     "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
-                Someone asked to reset your password, if it's not you just ignore this email<br>" .
-                    "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>" .
-                    "Otherwise click to the link to enter your new password</div>";
+                    Someone asked to reset your password, if it's not you just ignore this email<br>" .
+                    "Otherwise click to the link to set a new password</div>" .
+                    "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>";
                 return $query > 0
                     && $this->sendUserMail($mail, 'Password reset', $message);
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
     }
 
-    public function verify_user ($login, $token) {
+    public function verify_user($login, $token)
+    {
         try
         {
             if ($this->validChars($login)
@@ -220,27 +161,34 @@ class Database
                     ':login' => $login,
                     ':token' => $token));
                 return ($query->rowCount() > 0);
-            } else if (isset($user) && $user["is_verified"] == 1)
+            }
+            else if (isset($user) && $user["is_verified"] == 1)
                 return true;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
         return false;
     }
 
-    public function get_user($login) {
+    public function get_user($login)
+    {
         try
         {
             $query = $this->PDO->prepare("
               SELECT * FROM user WHERE login LIKE :login");
             $query->execute(array(":login" => $login));
             return ($query->fetchAll());
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
     }
 
-    public function authenticate ($login, $password) {
+    public function authenticate($login, $password)
+    {
         try
         {
             if (!$this->validChars($login) || $login === "" || $password === "")
@@ -252,7 +200,9 @@ class Database
           AND user.password = :password");
             $query->execute(array(':login' => $login, ':password' => $password));
             return !empty($query->fetchAll());
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
     }
