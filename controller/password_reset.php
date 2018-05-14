@@ -1,9 +1,9 @@
 <?php
 if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
-    && $_POST["submit"] === "Reset"
-    && !empty($user = $userManager->get_mail($_POST["mail"])))
+    && $_POST["submit"] === "Reset")
 {
-    if ($userManager->initiatePasswordReset($_POST["mail"]))
+    if (!empty($user = $userManager->get_mail($_POST["mail"]))
+        && $userManager->initiatePasswordReset($_POST["mail"]))
         $info = $info . "<h2 class='success'>Reset account mail sent</h2>";
     else
         $info = $info . "<h2 class='error'>Unable to send reset mail, 

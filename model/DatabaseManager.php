@@ -15,7 +15,7 @@ class DatabaseManager
         }
         catch (Exception $exception)
         {
-            throw new Exception("Cannot connect to database");
+            throw new Exception("Object cannot connect to database");
         }
     }
 
@@ -25,15 +25,15 @@ class DatabaseManager
         {
             $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS user (
-              id          INT         NOT NULL AUTO_INCREMENT UNIQUE,
-              login       VARCHAR(20) NOT NULL,
-              password    VARCHAR(128),
-              mail        VARCHAR(254),
-              check_token VARCHAR(128),
-              reset_token VARCHAR(128),
-              creation_date TIMESTAMP NOT NULL DEFAULT now(),
-              reset_date  TIMESTAMP,
-              is_verified INT NOT NULL DEFAULT 0,
+              id            INT           NOT NULL AUTO_INCREMENT UNIQUE,
+              login         VARCHAR(20)   NOT NULL,
+              password      VARCHAR(128)  NOT NULL,
+              mail          VARCHAR(254)  NOT NULL,
+              check_token   VARCHAR(64)   NOT NULL,
+              reset_token   VARCHAR(64),
+              creation_date TIMESTAMP     NOT NULL DEFAULT now(),
+              reset_date    TIMESTAMP,
+              is_verified   INT           NOT NULL DEFAULT 0,
               PRIMARY KEY (id))
               ENGINE = InnoDB;");
 

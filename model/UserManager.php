@@ -18,7 +18,7 @@ class UserManager extends DatabaseManager
     public function validNewPassword($password)
     {
         return isset($password)
-            && strlen($password) >= 8
+            && strlen($password) >= 8 && strlen($password) <= 127
             && preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $password);
     }
 
@@ -70,7 +70,7 @@ class UserManager extends DatabaseManager
             $token = $this->generate_random_token();
             $query = $this->PDO->prepare("
                 INSERT INTO user VALUES 
-                (NULL, :login, :password, :mail, :token, NULL, NULL, NULL, 0);");
+                (NULL, :login, :password, :mail, :token, :token, now(), now(), 0);");
             $query->execute(array(
                 ':login' => $login,
                 ':password' => $password,
@@ -104,7 +104,8 @@ class UserManager extends DatabaseManager
         }
     }
 
-    public function initiatePasswordReset($mail) {
+    public function initiatePasswordReset($mail)
+    {
         try
         {
             if (empty($user = $this->get_mail($mail)[0]) || !isset($user['id']))
@@ -114,14 +115,13 @@ class UserManager extends DatabaseManager
             else
             {
                 $token = $this->generate_random_token();
-                var_dump($token);
                 $query = $this->PDO->prepare("
                     UPDATE user 
                     SET reset_token = :token AND reset_date = now() 
-                    WHERE mail LIKE :mail");
+                    WHERE mail = :mail");
                 $query->execute(array(':token' => $token, ':mail' => $mail));
                 $query = $query->rowCount();
-                $token =
+                $tokenLink =
                     "http://{$this->SITE_ADDRESS}/index.php" .
                     "?action=reset&mail={$mail}&token={$token}";
                 $message =
@@ -134,9 +134,10 @@ class UserManager extends DatabaseManager
                     "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
                     Someone asked to reset your password, if it's not you just ignore this email<br>" .
                     "Otherwise click to the link to set a new password</div>" .
-                    "<a style='color: whitesmoke' href=\"{$token}\">Reset Password</a><br>";
-                return $query > 0
-                    && $this->sendUserMail($mail, 'Password reset', $message);
+                    "<a style='color: whitesmoke' href=\"{$tokenLink}\">Reset Password</a><br>";
+                var_dump($query, $mail, $tokenLink, $token);
+                return ($query > 0
+                    && $this->sendUserMail($mail, 'Password reset', $message));
             }
         }
         catch (Exception $e)
@@ -155,8 +156,8 @@ class UserManager extends DatabaseManager
             {
                 $query = $this->PDO->prepare("
                     UPDATE user SET is_verified = 1 
-                    WHERE login = :login 
-                    AND check_token = :token");
+                    WHERE login LIKE :login 
+                    AND check_token LIKE :token");
                 $query->execute(array(
                     ':login' => $login,
                     ':token' => $token));

@@ -22,7 +22,7 @@ try {
 
 /************* Router ************/
 
-if (isset($_GET) && isset($_GET["action"]))
+if ($userManager != NULL && isset($_GET) && isset($_GET["action"]))
 {
     if ($_GET["action"] === "login") {
         if (isset($_POST)
@@ -55,6 +55,7 @@ if (isset($_GET) && isset($_GET["action"]))
             $info = $info . "<h2 class='success'>Account activated</h2><br>";
         else
             $info = $info . "<h2 class='error'>Error wrong token/login</h2><br>";
+        $content = "";
     }
     else if ($_GET["action"] === "reset") {
         require("controller/password_reset.php");
