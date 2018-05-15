@@ -1,0 +1,12 @@
+version: '3'
+services:
+    mysql:
+        image: mysql:5.6
+        ports:
+          - "8888:3306"
+        environment:
+          - MYSQL_ROOT_PASSWORD=jaimeles1576483bonnesmontagnesrectangulaires
+          - MYSQL_DATABASE=camagru
+#        command: echo "Europe/Paris" > /etc/timezone
+        container_name: mysql
+        restart: always
