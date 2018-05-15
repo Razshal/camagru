@@ -12,13 +12,24 @@ if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
 }
 else if (isset($_GET["token"]) && isset($_GET["mail"]))
 {
-    echo $_GET["token"] . "<br>";
     if (!empty($user = $userManager->get_mail($_GET["mail"]))
-        && $user[0]["check_token"] === $_GET["token"])
+        && $user[0]["reset_token"] === $_GET["token"])
     {
         require ($_SERVER["DOCUMENT_ROOT"] . "/views/chose_new_password.php");
     }
-    var_dump($user[0]["reset_date"]);
+    else
+        $info = $info . "<p class='error'>Wrong token/mail</p>";
+}
+else if (isset($_POST) && isset($_POST["submit"])
+    && isset($_POST["mail"]) && isset($_POST["password"])
+    && isset($_POST["submit"]) && $_POST["submit"] === "Change")
+{
+    if (!empty($user = $userManager->get_mail($_POST["mail"]))
+        && $user[0]["reset_token"] === $_POST["token"]
+        && $userManager->is_reset_token_still_valid($_POST["mail"]))
+    {
+
+    }
 }
 else
     require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");

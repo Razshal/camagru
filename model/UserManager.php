@@ -116,8 +116,7 @@ class UserManager extends DatabaseManager
             {
                 $token = $this->generate_random_token();
                 $query = $this->PDO->prepare("
-                    UPDATE user 
-                    SET reset_token = :token AND reset_date = now() 
+                    UPDATE user SET reset_token = :token, reset_date = now() 
                     WHERE mail = :mail");
                 $query->execute(array(':token' => $token, ':mail' => $mail));
                 $query = $query->rowCount();
@@ -133,9 +132,8 @@ class UserManager extends DatabaseManager
                     padding: 30px;'>" .
                     "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
                     Someone asked to reset your password, if it's not you just ignore this email<br>" .
-                    "Otherwise click to the link to set a new password</div>" .
-                    "<a style='color: whitesmoke' href=\"{$tokenLink}\">Reset Password</a><br>";
-                var_dump($query, $mail, $tokenLink, $token);
+                    "Otherwise click to the link to set a new password<br>" .
+                    "<a style='color: whitesmoke' href=\"{$tokenLink}\">Reset Password</a></div>";
                 return ($query > 0
                     && $this->sendUserMail($mail, 'Password reset', $message));
             }
@@ -171,6 +169,17 @@ class UserManager extends DatabaseManager
             return false;
         }
         return false;
+    }
+
+    public function is_reset_token_still_valid($mail)
+    {
+        try {
+            if (empty($mail = $this->get_mail($mail)))
+                return false;
+            $date = new DateTime($mail[0]["reset_date"], new DateTimeZone('Paris/Europe'));
+            var_dump($date);
+        } catch (Exception $e) {echo $e;}
+        return true;
     }
 
     public function get_user($login)
