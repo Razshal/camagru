@@ -15,6 +15,7 @@ class SessionManager
     public function is_logged_user_valid ()
     {
         return (isset($_SESSION) && isset($_SESSION["user"])
+            && $_SESSION["user"] !== ""
             && $this->userManager->get_user($_SESSION["user"]));
     }
 

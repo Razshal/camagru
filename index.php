@@ -58,7 +58,10 @@ if ($userManager != NULL && $sessionManager != NULL
         require("controller/password_reset.php");
     }
     else if ($_GET["action"] === "account") {
-        require ("views/account.php");
+        if (!$sessionManager->is_logged_user_valid())
+            require ("controller/signin.php");
+        else
+            require ("views/account.php");
     }
 }
 require ("views/structure/template.php");

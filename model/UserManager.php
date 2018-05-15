@@ -25,7 +25,7 @@ class UserManager extends DatabaseManager
     public function validNewLogin($login)
     {
         return isset($login) && strlen($login) >= 4
-            && $this->get_user($login);
+            && !$this->get_user($login);
     }
 
     public function validChars($login)
