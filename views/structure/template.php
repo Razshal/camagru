@@ -26,9 +26,7 @@
         </header>
         <main>
             <div id="errorPlace">
-                <?php if (isset($info) && $info !== "")
-                    echo $info;
-                ?>
+                <?=$info?>
             </div>
             <?=$content?>
         </main>
