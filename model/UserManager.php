@@ -70,7 +70,7 @@ class UserManager extends DatabaseManager
             $token = $this->generate_random_token();
             $query = $this->PDO->prepare("
                 INSERT INTO user VALUES 
-                (NULL, :login, :password, :mail, :token, :token, now(), now(), 0);");
+                (NULL, :login, :password, :mail, :token, :token, now(), now(), 0, 1);");
             $query->execute(array(
                 ':login' => $login,
                 ':password' => $password,
@@ -99,7 +99,9 @@ class UserManager extends DatabaseManager
                 return false;
             }
             return true;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             return false;
         }
     }
@@ -132,7 +134,8 @@ class UserManager extends DatabaseManager
                     padding: 30px;'>" .
                     "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
                     Someone asked to reset your password, if it's not you just ignore this email<br>" .
-                    "Otherwise click to the link to set a new password<br>" .
+                    "Otherwise click to the link to set a new password, 
+                    the link will expire in {$this->TOKEN_VALIDITY} hours<br>" .
                     "<a style='color: whitesmoke' href=\"{$tokenLink}\">Reset Password</a></div>";
                 return ($query > 0
                     && $this->sendUserMail($mail, 'Password reset', $message));
@@ -173,13 +176,20 @@ class UserManager extends DatabaseManager
 
     public function is_reset_token_still_valid($mail)
     {
-        try {
-            if (empty($mail = $this->get_mail($mail)))
+        try
+        {
+            if (empty($mail = $this->get_mail($mail)) || $mail[0]["reset_token"] == NULL)
                 return false;
-            $date = new DateTime($mail[0]["reset_date"], new DateTimeZone('Paris/Europe'));
-            var_dump($date);
-        } catch (Exception $e) {echo $e;}
-        return true;
+            $date = new DateTime($mail[0]["reset_date"], new DateTimeZone('Europe/Paris'));
+            if (date_diff($date, new DateTime())->h < $this->TOKEN_VALIDITY)
+                return true;
+            else
+                return false;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
     }
 
     public function get_user($login)
@@ -203,13 +213,46 @@ class UserManager extends DatabaseManager
         {
             if (!$this->validChars($login) || $login === "" || $password === "")
                 return false;
-            $password = $this->hash_pw($password);
             $query = $this->PDO->prepare("
-          SELECT * FROM user 
-          WHERE user.login = :login 
-          AND user.password = :password");
-            $query->execute(array(':login' => $login, ':password' => $password));
+              SELECT * FROM user 
+              WHERE user.login = :login 
+              AND user.password = :password");
+            $query->execute(array(':login' => $login,
+                ':password' => $this->hash_pw($password)));
             return !empty($query->fetchAll());
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
+    private function drop_reset_token($mail)
+    {
+        if (empty($this->get_mail($mail)))
+            return false;
+        $query = $this->PDO->prepare("
+            UPDATE user 
+            SET reset_token = NULL
+            WHERE mail LIKE :mail");
+        $query->execute(array(':mail' => $mail));
+        return $query->rowCount() > 0;
+    }
+
+    public function reset_password ($mail, $password)
+    {
+        try
+        {
+            if (empty($this->get_mail($mail)))
+                return false;
+            $query = $this->PDO->prepare("
+            UPDATE user 
+            SET password = :password
+            WHERE mail LIKE :mail");
+            $query->execute(array(':password' => $this->hash_pw($password),
+                ':mail' => $mail));
+            return $query->rowCount() > 0
+                && $this->drop_reset_token($mail);
         }
         catch (Exception $e)
         {

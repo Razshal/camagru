@@ -3,13 +3,15 @@ session_start();
 require_once ("config/database.php");
 require_once ("config/site.php");
 require_once ("model/UserManager.php");
+date_default_timezone_set ( "Europe/Paris");
 
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
 $info = "";
 
 try {
-    $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD, $SITE_ADDRESS);
+    $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD,
+        $SITE_ADDRESS, $RESET_PASSWORD_TOKEN_VALIDITY);
     if (isset($_SESSION) && isset($_SESSION["user"])
         && $_SESSION["user"] != ""
         && $userManager != NULL && empty($userManager->get_user($_SESSION["user"])))

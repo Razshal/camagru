@@ -4,14 +4,19 @@ class DatabaseManager
 {
     protected $PDO = NULL;
     protected $SITE_ADDRESS = NULL;
+    protected $TOKEN_VALIDITY = 1;
 
-    public function __construct($DB_DSN, $DB_USER, $DB_PASSWORD, $SITE_ADDRESS)
+    public function __construct($DB_DSN, $DB_USER, $DB_PASSWORD,
+                                $SITE_ADDRESS, $TOKEN_VALIDITY)
     {
         try
         {
             $this->PDO = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD,
                 array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             $this->SITE_ADDRESS = $SITE_ADDRESS;
+            $this->TOKEN_VALIDITY = $TOKEN_VALIDITY;
+            if ($TOKEN_VALIDITY < 1)
+                $this->TOKEN_VALIDITY = 1;
         }
         catch (Exception $exception)
         {
@@ -23,6 +28,7 @@ class DatabaseManager
     {
         try
         {
+            $this->PDO->exec("SET GLOBAL time_zone = 'Europe/Paris';");
             $this->PDO->exec("
             CREATE TABLE IF NOT EXISTS user (
               id            INT           NOT NULL AUTO_INCREMENT UNIQUE,
@@ -33,7 +39,8 @@ class DatabaseManager
               reset_token   VARCHAR(64),
               creation_date TIMESTAMP     NOT NULL DEFAULT now(),
               reset_date    TIMESTAMP,
-              is_verified   INT           NOT NULL DEFAULT 0,
+              is_verified   BOOL          NOT NULL DEFAULT 0,
+              notifications BOOL          NOT NULL DEFAULT 1,
               PRIMARY KEY (id))
               ENGINE = InnoDB;");
 

@@ -28,8 +28,13 @@ else if (isset($_POST) && isset($_POST["submit"])
         && $user[0]["reset_token"] === $_POST["token"]
         && $userManager->is_reset_token_still_valid($_POST["mail"]))
     {
-
+        if (!$userManager->reset_password($_POST["mail"], $_POST["password"]))
+            $info = $info . "<p class='error'>Error reseting your password, please retry</p>";
+        else
+            $info = $info . "<p class='success'>Password reseted</p>";
     }
+    else
+        $info = $info . "<p class='error'>Invalid token</p>";
 }
 else
     require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
