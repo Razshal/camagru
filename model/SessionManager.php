@@ -18,6 +18,17 @@ class SessionManager
             && $this->userManager->get_user($_SESSION["user"]));
     }
 
+    public function log_in_user ($login, $password)
+    {
+        if ($this->userManager->authenticate($login, $password))
+        {
+            $_SESSION["user"] = $login;
+            return true;
+        }
+        else
+            return false;
+    }
+
     public function log_out_user ()
     {
         $_SESSION["user"] = "";

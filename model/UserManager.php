@@ -135,7 +135,7 @@ class UserManager extends DatabaseManager
                     "<h2 style='text-align: center; color: whitesmoke'>Hello {$user["login"]}</h2><br>
                     Someone asked to reset your password, if it's not you just ignore this email<br>" .
                     "Otherwise click to the link to set a new password, 
-                    the link will expire in {$this->TOKEN_VALIDITY} hours<br>" .
+                    the link will expire in {$this->TOKEN_VALIDITY} hour(s)<br>" .
                     "<a style='color: whitesmoke' href=\"{$tokenLink}\">Reset Password</a></div>";
                 return ($query > 0
                     && $this->sendUserMail($mail, 'Password reset', $message));
