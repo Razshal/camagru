@@ -25,7 +25,7 @@ class UserManager extends DatabaseManager
     public function validNewLogin($login)
     {
         return isset($login) && strlen($login) >= 4
-            && empty($this->get_user($login));
+            && $this->get_user($login);
     }
 
     public function validChars($login)
@@ -152,7 +152,7 @@ class UserManager extends DatabaseManager
         try
         {
             if ($this->validChars($login)
-                && !empty($user = $this->get_user($login)[0])
+                && ($user = $this->get_user($login))
                 && !$user["is_verified"] == 1)
             {
                 $query = $this->PDO->prepare("
@@ -164,7 +164,8 @@ class UserManager extends DatabaseManager
                     ':token' => $token));
                 return ($query->rowCount() > 0);
             }
-            else if (isset($user) && $user["is_verified"] == 1)
+            else if (isset($user) && $user !== false
+                && $user["is_verified"] == 1)
                 return true;
         }
         catch (Exception $e)
@@ -199,7 +200,10 @@ class UserManager extends DatabaseManager
             $query = $this->PDO->prepare("
               SELECT * FROM user WHERE login LIKE :login");
             $query->execute(array(":login" => $login));
-            return ($query->fetchAll());
+            if (empty($query = $query->fetchAll()))
+                return false;
+            else
+                return $query[0];
         }
         catch (Exception $e)
         {

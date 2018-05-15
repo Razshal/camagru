@@ -51,13 +51,14 @@ header a {
 
 .loginForm {
     width: 60vw;
-    min-height: 50vh;
+    min-height: 400px;
     display: flex;
     flex-direction: column;
     padding: 20px;
     justify-content: space-around;
     align-items: center;
     font-size: 25px;
+    text-align: center;
 }
 
 .loginForm input[type='text'],
@@ -134,6 +135,12 @@ a.link {
     header a {
         font-size: 17px;
         padding: 15px 5px 15px 5px;
+    }
+}
+
+@media all and (min-height: 800px) {
+    .loginForm {
+        min-height: 500px;
     }
 }
 
