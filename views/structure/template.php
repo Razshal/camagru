@@ -11,12 +11,18 @@
         <header>
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
             <a class="headerLink" href="#">Post</a>
-            <a class="headerLink" href="/index.php?action=account">Account</a>
             <?php
-                if (!isset($_SESSION) || !isset($_SESSION["user"]) || $_SESSION["user"] === "")
-                    echo "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
+                if (!$sessionManager->is_logged_user_valid())
+                {
+                    echo "<a class=\"headerLink\" href=\"/index.php?action=signin\">Sign-in</a>"
+                    . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
+                }
                 else
-                    echo "<a class=\"headerLink\" href=\"/index.php?action=logout\">Logout</a>";?>
+                {
+                    echo "<a class=\"headerLink\" href=\"/index.php?action=account\">Account</a>"
+                    . "<a class=\"headerLink\" href=\"/index.php?action=logout\">Logout</a>";
+                }
+            ?>
         </header>
         <main>
             <div id="errorPlace">
