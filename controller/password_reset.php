@@ -24,6 +24,7 @@ else if (isset($_POST) && isset($_POST["submit"])
     && isset($_POST["mail"]) && isset($_POST["password"])
     && isset($_POST["submit"]) && $_POST["submit"] === "Change")
 {
+    $content = "";
     if (!empty($user = $userManager->get_mail($_POST["mail"]))
         && $user[0]["reset_token"] === $_POST["token"]
         && $userManager->is_reset_token_still_valid($_POST["mail"]))
