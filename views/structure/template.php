@@ -12,7 +12,7 @@
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
             <a class="headerLink" href="#">Post</a>
             <?php
-                if (!$sessionManager->is_logged_user_valid())
+                if ($sessionManager && !$sessionManager->is_logged_user_valid())
                 {
                     echo "<a class=\"headerLink\" href=\"/index.php?action=signin\">Sign-in</a>"
                     . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
