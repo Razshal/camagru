@@ -4,16 +4,17 @@ require_once ("config/database.php");
 require_once ("config/site.php");
 require_once ("model/UserManager.php");
 require_once ("model/SessionManager.php");
+require_once ("model/siteManager.php");
 date_default_timezone_set ( "Europe/Paris");
 
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
-$info = "";
 
 try {
     $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD,
         $SITE_ADDRESS, $RESET_PASSWORD_TOKEN_VALIDITY);
     $sessionManager = new SessionManager($userManager);
+    $siteManager = new siteManager();
 
     if (!$sessionManager->is_logged_user_valid())
             $sessionManager->log_out_user();
@@ -49,9 +50,9 @@ if ($userManager != NULL && $sessionManager != NULL
         $done = 0;
         if (isset($_GET["user"]) && isset($_GET["token"])
             && $userManager->verify_user($_GET["user"], $_GET["token"]))
-            $info = $info . "<h2 class='success'>Account activated</h2><br>";
+            $siteManager->success_log("Account activated");
         else
-            $info = $info . "<h2 class='error'>Error wrong token/login</h2><br>";
+            $siteManager->error_log("Error wrong token/login");
         $content = "";
     }
     else if ($_GET["action"] === "reset") {

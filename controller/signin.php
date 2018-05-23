@@ -15,16 +15,14 @@ if ($userManager !== NULL && isset($_POST)
 else if (isset($_POST["submit"]))
     $querySuccess = false;
 if (isset($validMail) && !$validMail)
-    $info = $info . ("<h2 class='error'>Mail is already in use or not valid</h2><br>");
+    $siteManager->error_log("Mail is already in use or not valid");
 if (isset($validLogin) && !$validLogin)
-    $info = $info . ("<h2 class='error'>Login is already in use or not valid 
-                   (4 chars >= login <= 20 chars)</h2><br>");
+    $siteManager->error_log("Login is already in use or not valid, {$siteManager->login_policie()}");
 if (isset($validPass) && !$validPass)
-    $info = $info . ("<h2 class='error'>Password must be at least 8 long and
-                   contains at least one letter and one digit</h2><br>");
+    $siteManager->error_log("{$siteManager->password_policie()}");
 if (isset($querySuccess) && $querySuccess === false)
-    $info = $info . ("<h2 class='error'>Error during user creation, please retry</h2><br>");
+    $siteManager->error_log("Error during user creation, please retry");
 else if (isset($querySuccess) && $querySuccess === true)
-    $info = $info . ("<h2 class='success'>Account created</h2><br>");
+    $siteManager->success_log("Account created");
 
 require($_SERVER["DOCUMENT_ROOT"] . "/views/signin_form.php");

@@ -6,7 +6,7 @@ if (isset($_POST)
     $auth = $sessionManager->log_in_user($_POST["login"], $_POST["password"]);
 }
 if (isset($auth) && $auth === false)
-    $info = $info . ("<h2 class='error'>Unable to connect, check you username/password and if your account is activated</h2>");
+    $siteManager->error_log("Unable to connect, check you username/password and if your account is activated");
 else if ($sessionManager->is_logged_user_valid())
-    $info = $info . ("<h2 class='success'>Logged as {$sessionManager->get_logged_user_name()}</h2>");
+    $siteManager->success_log("Logged as {$sessionManager->get_logged_user_name()}");
 require ($_SERVER["DOCUMENT_ROOT"] . "/views/login_form.php");

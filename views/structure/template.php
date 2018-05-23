@@ -30,7 +30,7 @@
         </header>
         <main>
             <div id="errorPlace">
-                <?=$info?>
+                <?=$siteManager->get_logs()?>
             </div>
             <?=$content?>
         </main>

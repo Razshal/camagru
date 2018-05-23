@@ -4,10 +4,10 @@ if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
 {
     if (!empty($user = $userManager->get_mail($_POST["mail"]))
         && $userManager->initiatePasswordReset($_POST["mail"]))
-        $info = $info . "<h2 class='success'>Reset account mail sent</h2>";
+        $siteManager->success_log("Reset account mail sent");
     else
-        $info = $info . "<h2 class='error'>Unable to send reset mail, 
-        check if your mail is valid</h2>";
+        $siteManager->error_log("Unable to send reset mail, 
+        check if your mail is valid");
     require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
 }
 else if (isset($_GET["token"]) && isset($_GET["mail"]))
@@ -18,7 +18,7 @@ else if (isset($_GET["token"]) && isset($_GET["mail"]))
         require ($_SERVER["DOCUMENT_ROOT"] . "/views/chose_new_password.php");
     }
     else
-        $info = $info . "<p class='error'>Wrong token/mail</p>";
+        $siteManager->error_log("Wrong token/mail");
 }
 else if (isset($_POST) && isset($_POST["submit"])
     && isset($_POST["mail"]) && isset($_POST["password"])
@@ -30,15 +30,15 @@ else if (isset($_POST) && isset($_POST["submit"])
         && $userManager->is_reset_token_still_valid($_POST["mail"]))
     {
         if (!$userManager->validNewPassword($_POST["password"]))
-            $info = $info . "<p class='error'>Invalid password, must be between 8 and 127 
-                            chars with at least a digit and a letter</p>";
+            $siteManager->error_log("Invalid password, must be between 8 and 127 
+                            chars with at least a digit and a letter");
         else if (!$userManager->reset_password($_POST["mail"], $_POST["password"]))
-            $info = $info . "<p class='error'>Error reseting your password, please retry</p>";
+            $siteManager->error_log("Error reseting your password, please retry");
         else
-            $info = $info . "<p class='success'>Password reseted</p>";
+            $siteManager->success_log("Password reseted");
     }
     else
-        $info = $info . "<p class='error'>Invalid token</p>";
+        $siteManager->error_log("Invalid token");
 }
 else
     require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
