@@ -31,6 +31,7 @@ catch (Exception $e)
 if ($userManager != NULL && $sessionManager != NULL
     && isset($_GET) && isset($_GET["action"]))
 {
+    $content = "";
     if ($_GET["action"] === "login") {
         require("controller/login.php");
     }
@@ -60,7 +61,6 @@ if ($userManager != NULL && $sessionManager != NULL
     else if ($_GET["action"] === "account") {
         if ($sessionManager->is_logged_user_valid())
             require("controller/change_account.php");
-
     }
 }
 require ("views/structure/template.php");
