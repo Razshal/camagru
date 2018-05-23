@@ -99,6 +99,14 @@ a.link {
     text-decoration: none;
 }
 
+textarea {
+    border: 0;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Open Sans';
+}
+
 /***** Responsive ****/
 
 @media all and (max-width: 600px) {
@@ -162,7 +170,8 @@ form,
 input[type='text'],
 input[type='password'],
 input[type='email'],
-input[type='submit'] {
+input[type='submit'],
+textarea {
     color: whitesmoke;
 }
 
@@ -182,7 +191,8 @@ input[type='submit']:hover {
     background-color: #9b4418;
 }
 
-input[type='submit'] {
+input[type='submit'],
+textarea {
     background-color: #e98e4e;
 }
 

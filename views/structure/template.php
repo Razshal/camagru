@@ -12,9 +12,8 @@
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
             <?php
             if ($userManager && $userManager->isInitiated() === false)
-                echo "<a class=\"headerLink\" href=\"/index.php?action=setup\">Initiate</a>";
-            ?>
-            <a class="headerLink" href="#">Post</a>
+                echo "<a class=\"headerLink\" href=\"/index.php?action=setup\">Initiate</a>";?>
+            <a class="headerLink" href="/index.php?action=post">Post</a>
             <?php
             if ($sessionManager && $sessionManager->is_logged_user_valid())
             {
@@ -25,8 +24,7 @@
             {
                 echo "<a class=\"headerLink\" href=\"/index.php?action=signin\">Sign-in</a>"
                     . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
-            }
-            ?>
+            }?>
         </header>
         <main>
             <div id="errorPlace">

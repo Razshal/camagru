@@ -32,22 +32,20 @@ if ($userManager != NULL && $sessionManager != NULL
     && isset($_GET) && isset($_GET["action"]))
 {
     $content = "";
-    if ($_GET["action"] === "login") {
+    if ($_GET["action"] === "login")
         require("controller/login.php");
-    }
-    else if ($_GET["action"] === "logout") {
+    else if ($_GET["action"] === "logout")
+    {
         $sessionManager->log_out_user();
         header('location: index.php');
         die();
     }
-    else if ($_GET["action"] === "setup") {
-        require ("config/setup.php");
-    }
-    else if ($_GET["action"] === "signin") {
+    else if ($_GET["action"] === "setup")
+        require("config/setup.php");
+    else if ($_GET["action"] === "signin")
         require("controller/signin.php");
-    }
-    else if ($_GET["action"] === "verify") {
-        $done = 0;
+    else if ($_GET["action"] === "verify")
+    {
         if (isset($_GET["user"]) && isset($_GET["token"])
             && $userManager->verify_user($_GET["user"], $_GET["token"]))
             $siteManager->success_log("Account activated");
@@ -55,12 +53,19 @@ if ($userManager != NULL && $sessionManager != NULL
             $siteManager->error_log("Error wrong token/login");
         $content = "";
     }
-    else if ($_GET["action"] === "reset") {
+    else if ($_GET["action"] === "reset")
         require("controller/password_reset.php");
-    }
-    else if ($_GET["action"] === "account") {
+    else if ($_GET["action"] === "account" && $sessionManager->is_logged_user_valid())
+        require("controller/change_account.php");
+    else if ($_GET["action"] === "post")
+    {
         if ($sessionManager->is_logged_user_valid())
-            require("controller/change_account.php");
+            require("controller/post.php");
+        else
+        {
+            header('location: index.php?action=login');
+            die();
+        }
     }
 }
 require ("views/structure/template.php");
