@@ -24,6 +24,20 @@ class DatabaseManager
         }
     }
 
+    public function isInitiated()
+    {
+        try
+        {
+            $query = $this->PDO->exec("
+            SELECT 1 FROM user LIMIT 1");
+            return $query;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
     public function initiate()
     {
         try

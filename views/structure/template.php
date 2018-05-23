@@ -10,18 +10,21 @@
     <body>
         <header>
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
+            <?php
+            if ($userManager->isInitiated() === false)
+                echo "<a class=\"headerLink\" href=\"/index.php?action=setup\">Initiate</a>";?>
             <a class="headerLink" href="#">Post</a>
             <?php
-                if ($sessionManager && !$sessionManager->is_logged_user_valid())
-                {
-                    echo "<a class=\"headerLink\" href=\"/index.php?action=signin\">Sign-in</a>"
-                    . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
-                }
-                else
-                {
-                    echo "<a class=\"headerLink\" href=\"/index.php?action=account\">Account</a>"
+            if ($sessionManager && $sessionManager->is_logged_user_valid())
+            {
+                echo "<a class=\"headerLink\" href=\"/index.php?action=account\">Account</a>"
                     . "<a class=\"headerLink\" href=\"/index.php?action=logout\">Logout</a>";
-                }
+            }
+            else
+            {
+                echo "<a class=\"headerLink\" href=\"/index.php?action=signin\">Sign-in</a>"
+                    . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
+            }
             ?>
         </header>
         <main>

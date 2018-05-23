@@ -22,8 +22,8 @@ catch (Exception $e)
 {
     $userManager = NULL;
     $sessionManager = NULL;
-    $info = "<h1 class='error'>Fatal database error</h1><br>";
     $info = $DB_ERROR;
+    $content = "";
 }
 
 /************* Router ************/
