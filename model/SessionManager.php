@@ -45,4 +45,18 @@ class SessionManager
             return "";
         }
     }
+
+    public function update_user_name($login)
+    {
+        if ($this->userManager->get_user($login))
+        {
+            $_SESSION["user"] = $login;
+            return true;
+        }
+        else
+        {
+            $this->log_out_user();
+            return false;
+        }
+    }
 }

@@ -11,8 +11,9 @@
         <header>
             <a class="headerLink" href="/" id="siteTitle"><h1>Camagru</h1></a>
             <?php
-            if ($userManager->isInitiated() === false)
-                echo "<a class=\"headerLink\" href=\"/index.php?action=setup\">Initiate</a>";?>
+            if ($userManager && $userManager->isInitiated() === false)
+                echo "<a class=\"headerLink\" href=\"/index.php?action=setup\">Initiate</a>";
+            ?>
             <a class="headerLink" href="#">Post</a>
             <?php
             if ($sessionManager && $sessionManager->is_logged_user_valid())

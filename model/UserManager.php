@@ -231,6 +231,63 @@ class UserManager extends DatabaseManager
         }
     }
 
+    public function change_password($login, $password)
+    {
+        try {
+            if (empty($this->get_user($login)) || !$this->validNewPassword($password))
+                return false;
+            $query = $this->PDO->prepare("
+                UPDATE user 
+                SET password = :password
+                WHERE user.login LIKE :login");
+            $query->execute(array(':password' => $this->hash_pw($password),
+                ':login' => $login));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
+    public function change_login ($login, $newlogin)
+    {
+        try
+        {
+            if (empty($this->get_user($login)) || !$this->validNewLogin($newlogin))
+                return false;
+            $query = $this->PDO->prepare("
+                UPDATE user
+                SET login = :newLogin
+                WHERE login LIKE :actualLogin");
+            $query->execute(array(':newLogin' => $newlogin, 'actualLogin' => $login));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
+    public function change_mail ($login, $newMail)
+    {
+        try
+        {
+            if (empty($this->get_user($login)) || !$this->validNewMail($newMail))
+                return false;
+            $query = $this->PDO->prepare("
+                UPDATE user
+                SET mail = :newMail
+                WHERE login LIKE :actualLogin");
+            $query->execute(array(':newMail' => $newMail, 'actualLogin' => $login));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
     private function drop_reset_token($mail)
     {
         if (empty($this->get_mail($mail)))
@@ -245,22 +302,9 @@ class UserManager extends DatabaseManager
 
     public function reset_password ($mail, $password)
     {
-        try
-        {
-            if (empty($this->get_mail($mail)))
-                return false;
-            $query = $this->PDO->prepare("
-            UPDATE user 
-            SET password = :password
-            WHERE mail LIKE :mail");
-            $query->execute(array(':password' => $this->hash_pw($password),
-                ':mail' => $mail));
-            return $query->rowCount() > 0
-                && $this->drop_reset_token($mail);
-        }
-        catch (Exception $e)
-        {
+        if (empty($user = $this->get_mail($mail)))
             return false;
-        }
+        return $this->change_password($user["login"], $password)
+            && $this->drop_reset_token($mail);
     }
 }

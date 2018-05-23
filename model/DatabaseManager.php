@@ -28,8 +28,9 @@ class DatabaseManager
     {
         try
         {
-            $query = $this->PDO->exec("
-            SELECT 1 FROM user LIMIT 1");
+            $query = $this->PDO->query("
+            SELECT 1 FROM user LIMIT 1;");
+            $query = $query->execute();
             return $query;
         }
         catch (Exception $e)
