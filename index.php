@@ -9,13 +9,12 @@ date_default_timezone_set ( "Europe/Paris");
 
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
+$siteManager = new siteManager();
 
 try {
     $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD,
         $SITE_ADDRESS, $RESET_PASSWORD_TOKEN_VALIDITY);
     $sessionManager = new SessionManager($userManager);
-    $siteManager = new siteManager();
-
     if (!$sessionManager->is_logged_user_valid())
             $sessionManager->log_out_user();
 }
@@ -23,7 +22,7 @@ catch (Exception $e)
 {
     $userManager = NULL;
     $sessionManager = NULL;
-    $info = $DB_ERROR;
+    $siteManager->strong_error_log($DB_ERROR);
     $content = "";
 }
 
@@ -59,10 +58,9 @@ if ($userManager != NULL && $sessionManager != NULL
         require("controller/password_reset.php");
     }
     else if ($_GET["action"] === "account") {
-        if (!$sessionManager->is_logged_user_valid())
-            require ("controller/signin.php");
-        else
-            require ("views/account.php");
+        if ($sessionManager->is_logged_user_valid())
+            require("controller/change_account.php");
+
     }
 }
 require ("views/structure/template.php");

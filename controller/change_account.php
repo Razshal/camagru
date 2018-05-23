@@ -30,3 +30,5 @@ if (isset($_POST) && isset($_POST["oldPassword"])
         $mailChange = $userManager->change_mail(
             $sessionManager->get_logged_user_name(), $_POST["mail"]);
 }
+else
+    require("views/account.php");

@@ -17,9 +17,9 @@ else if (isset($_POST["submit"]))
 if (isset($validMail) && !$validMail)
     $siteManager->error_log("Mail is already in use or not valid");
 if (isset($validLogin) && !$validLogin)
-    $siteManager->error_log("Login is already in use or not valid, {$siteManager->login_policie()}");
+    $siteManager->error_log("Login is already in use or not valid, {$siteManager->login_policy()}");
 if (isset($validPass) && !$validPass)
-    $siteManager->error_log("{$siteManager->password_policie()}");
+    $siteManager->error_log("{$siteManager->password_policy()}");
 if (isset($querySuccess) && $querySuccess === false)
     $siteManager->error_log("Error during user creation, please retry");
 else if (isset($querySuccess) && $querySuccess === true)
