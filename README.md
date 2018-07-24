@@ -1,22 +1,22 @@
 # camagru
 Basic image sharing website with filters, 42 school project
 
-## No framework auhtorized
+### No framework auhtorized
 Except pure css frameworks
 
-## Images must be assembled on the server side
+### Images must be assembled on the server side
 
-## Mails
+### Mails
 Confirm account, reset password, notificaitons
 
-## Security
+### Security
 Avoid sql injections, properly store user datas, avoid unauthorized uploads, etc
 
-## Stability
+### Stability
 No error logs are tolerated except for https and getUserMedia()
 
-## Only PHP back-end
+### Only PHP back-end
 No libraries allowed, PDO only for database connection
 
-## Compatibilty
+### Compatibilty
 At least Firefox 41 and Chrome 46
