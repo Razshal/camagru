@@ -1,6 +1,5 @@
 <?php
 if ($userManager !== NULL && $success = $userManager->initiate())
-    $info = $info . "<p class='success'>Website is ok</p><br>";
+    $siteManager->success_log("Website is ok");
 else
-    $info = $info . "<p class='error'>Error during database init</p><br>";
-$content = "";
+    $siteManager->error_log("Error during database init");
