@@ -26,7 +26,7 @@
                     . "<a class=\"headerLink\" href=\"/index.php?action=login\">Login</a>";
             }?>
         </header>
-        <main>
+        <main class="container">
             <div id="errorPlace">
                 <?=$siteManager->get_logs()?>
             </div>
