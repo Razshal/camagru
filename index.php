@@ -7,6 +7,8 @@ require_once ("model/SessionManager.php");
 require_once ("model/siteManager.php");
 date_default_timezone_set ( "Europe/Paris");
 
+/************* Manager and page init ************/
+
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
 $siteManager = new siteManager();
