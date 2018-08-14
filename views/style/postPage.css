@@ -7,3 +7,9 @@
     background-color: gray;
 }
 
+.filterPreview {
+    width: 100px;
+    height: 100px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}

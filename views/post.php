@@ -4,6 +4,9 @@
 <div id="cameraPlace">
     <video autoplay id="video"></video>
 </div>
+<div id="filtersBar">
+
+</div>
 <canvas id="canvas"></canvas>
 <button id="captureButton">Snap</button>
 Or send from your computer<br/>

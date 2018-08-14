@@ -6,6 +6,7 @@ window.onload = async () => {
     const errorPlace = document.getElementById("errorPlace");
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
+    const filtersBar = document.getElementById('filtersBar');
     const filters = {};
     const cameraConstraints =
         {
@@ -67,8 +68,7 @@ window.onload = async () => {
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
     };
 
-    /************** Filter **************/
-
+    /************** Filters **************/
 
     for (let i = 0; i < 3; i++) {
         filters[i] = new Image();
@@ -80,7 +80,17 @@ window.onload = async () => {
         filters[i].style.left = 0;
     }
     filters[0].src = "/views/camera/filters/Batman.png";
-    cameraPlace.appendChild(filters[0]);
+    filters[1].src = "/views/camera/filters/Anon.png";
+    filters[2].src = "/views/camera/filters/Carnival.png";
+
+    for (let i = 0; i < filters.length; i++){
+        let addFilter = filters[i];
+        addFilter.classList.add('filterPreview');
+        addFilter.onclick = () => {
+            document.getElementsByClassName('filtersPreview').remove();
+            cameraPlace.appendChild(filters[i]);
+        }
+    }
 
     /************** Load User Picture **************/
 
