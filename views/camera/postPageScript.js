@@ -7,7 +7,7 @@ window.onload = async () => {
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
     const filtersBar = document.getElementById('filtersBar');
-    const filters = {};
+    const filters = [];
     const cameraConstraints =
         {
             audio: false,
@@ -62,7 +62,7 @@ window.onload = async () => {
     /************** Camera Caption **************/
 
     captureButton.onclick = () => {
-        canvas.style.display= 'block';
+        canvas.style.display = 'block';
         canvas.width = video.width;
         canvas.height = video.height;
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
@@ -70,27 +70,28 @@ window.onload = async () => {
 
     /************** Filters **************/
 
-    for (let i = 0; i < 3; i++) {
-        filters[i] = new Image();
-        filters[i].width = video.width;
-        filters[i].height = video.height;
-        filters[i].style.display = 'block';
-        filters[i].style.position = 'absolute';
-        filters[i].style.top = 0;
-        filters[i].style.left = 0;
-    }
-    filters[0].src = "/views/camera/filters/Batman.png";
-    filters[1].src = "/views/camera/filters/Anon.png";
-    filters[2].src = "/views/camera/filters/Carnival.png";
+    filters[0] = "/views/camera/filters/Batman.png";
+    filters[1] = "/views/camera/filters/Anon.png";
+    filters[2] = "/views/camera/filters/Carnival.png";
 
-    for (let i = 0; i < filters.length; i++){
-        let addFilter = filters[i];
-        addFilter.classList.add('filterPreview');
-        addFilter.onclick = () => {
-            document.getElementsByClassName('filtersPreview').remove();
-            cameraPlace.appendChild(filters[i]);
-        }
-    }
+    filters.forEach((elem) => {
+        let filterPreview = new Image();
+        filterPreview.src = elem;
+        filterPreview.classList.add('filterPreview');
+        filterPreview.onclick = (event) => {
+            let filter = new Image();
+            let actualFilters = document.getElementsByClassName('filter');
+            filter.src = event.target.src;
+            filter.classList.add('filter');
+            filter.width = video.width;
+            filter.height = video.height;
+            while (actualFilters[0]) {
+                actualFilters[0].parentNode.removeChild(actualFilters[0]);
+            }
+            cameraPlace.appendChild(filter);
+        };
+        filtersBar.appendChild(filterPreview);
+    });
 
     /************** Load User Picture **************/
 

@@ -7,9 +7,24 @@
     background-color: gray;
 }
 
+#filtersBar {
+    min-width: 300px;
+    min-height: 100px;
+    background-color: #e98e4e;
+}
+
 .filterPreview {
     width: 100px;
     height: 100px;
+    cursor: pointer;
     background-position: center center;
     background-repeat: no-repeat;
 }
+
+.filter {
+    top: 0;
+    left: 0;
+    display: block;
+    position: absolute;
+}
+
