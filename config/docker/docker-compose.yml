@@ -1,12 +1,13 @@
-version: '3'
+version: '3.1'
+
 services:
-    mysql:
-        build: mysql/
-        ports:
-          - "8888:3306"
-        environment:
-          - MYSQL_ROOT_PASSWORD=jaimeles1576483bonnesmontagnesrectangulaires
-          - MYSQL_DATABASE=camagru
-#        command: echo "Europe/Paris" > /etc/timezone
-        container_name: mysql
-        restart: always
+
+  db:
+    build: mysql/
+    ports:
+        - "8888:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: jaimeles1576483bonnesmontagnesrectangulaires
+        MYSQL_DATABASE: camagru
