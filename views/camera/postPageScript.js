@@ -53,7 +53,7 @@ window.onload = async () => {
         .catch(function(error) {
             errorPlace.style.display = "block";
             if (error.name === "NotAllowedError")
-                errorPlace.innerHTML = "You refused to share your camera";
+                errorPlace.innerHTML = "Camera access not allowed";
             else
                 errorPlace.innerHTML = error.name + ": " + error.message;
             errorPlace.classList.add("error");
@@ -61,11 +61,16 @@ window.onload = async () => {
 
     /************** Camera Caption **************/
 
+    // if (!document.getElementsByClassName('filter')[0])
+
+
     captureButton.onclick = () => {
         canvas.style.display = 'block';
         canvas.width = video.width;
         canvas.height = video.height;
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
+        document.getElementById('preview')
+            .appendChild(document.getElementsByClassName('filter')[0]);
     };
 
     /************** Filters **************/
@@ -85,9 +90,8 @@ window.onload = async () => {
             filter.classList.add('filter');
             filter.width = video.width;
             filter.height = video.height;
-            while (actualFilters[0]) {
+            while (actualFilters[0])
                 actualFilters[0].parentNode.removeChild(actualFilters[0]);
-            }
             cameraPlace.appendChild(filter);
         };
         filtersBar.appendChild(filterPreview);
@@ -96,7 +100,9 @@ window.onload = async () => {
     /************** Load User Picture **************/
 
     userFile.onchange = () => {
+        let userImage = new Image();
+        userImage.src = this.files[0];
         video.style.display = "none";
-        canvas.getContext('2d').drawImage(this.files[0], 0, 0);
+        cameraPlace.appendChild(userImage);
     };
 };

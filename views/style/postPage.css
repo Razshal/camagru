@@ -28,3 +28,6 @@
     position: absolute;
 }
 
+#preview {
+    position: relative;
+}
