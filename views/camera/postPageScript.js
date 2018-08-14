@@ -45,8 +45,7 @@ window.onload = async () => {
         canvas.style.display= 'block';
         canvas.width = video.width;
         canvas.height = video.height;
-        canvas.getContext('2d').drawImage(video, 0, 0,
-            video.width * (video.width / 640), video.height * (video.height / 360));
+        canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
     };
 
     /************** Load User Picture **************/
