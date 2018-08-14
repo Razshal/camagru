@@ -1,0 +1,9 @@
+#canvas {
+    display: none;
+}
+
+#cameraPlace {
+    position: relative;
+    background-color: gray;
+}
+

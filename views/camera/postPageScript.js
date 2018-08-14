@@ -6,6 +6,26 @@ window.onload = async () => {
     const errorPlace = document.getElementById("errorPlace");
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
+    const filters = {};
+    const cameraConstraints =
+        {
+            audio: false,
+            video: {
+                width: 1280,
+                height: 720,
+                facingMode: 'user'
+            }
+        };
+
+    /************** Camera preview dynamic size **************/
+
+    if (document.body.clientWidth <= 1024) {
+        cameraPlace.width = document.body.clientWidth;
+        video.width = document.body.clientWidth;
+    } else
+        video.width = 1024;
+    video.height = video.width / 16 * 9;
+    cameraPlace.height = cameraPlace.width / 16 * 9;
 
     /************** Camera Stream **************/
 
@@ -21,7 +41,7 @@ window.onload = async () => {
             });
         }
     }
-    navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1280, height: 720 } })
+    navigator.mediaDevices.getUserMedia(cameraConstraints)
         .then(function(stream) {
             if ("srcObject" in video)
                 video.srcObject = stream;
@@ -31,7 +51,6 @@ window.onload = async () => {
         })
         .catch(function(error) {
             errorPlace.style.display = "block";
-            video.style.display = "none";
             if (error.name === "NotAllowedError")
                 errorPlace.innerHTML = "You refused to share your camera";
             else
@@ -48,10 +67,25 @@ window.onload = async () => {
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
     };
 
+    /************** Filter **************/
+
+
+    for (let i = 0; i < 3; i++) {
+        filters[i] = new Image();
+        filters[i].width = video.width;
+        filters[i].height = video.height;
+        filters[i].style.display = 'block';
+        filters[i].style.position = 'absolute';
+        filters[i].style.top = 0;
+        filters[i].style.left = 0;
+    }
+    filters[0].src = "/views/camera/filters/Batman.png";
+    cameraPlace.appendChild(filters[0]);
+
     /************** Load User Picture **************/
 
     userFile.onchange = () => {
+        video.style.display = "none";
         canvas.getContext('2d').drawImage(this.files[0], 0, 0);
-
     };
 };
