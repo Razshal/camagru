@@ -21,7 +21,8 @@ class SessionManager
 
     public function log_in_user ($login, $password)
     {
-        if ($this->userManager->authenticate($login, $password))
+        if ($this->userManager->authenticate($login, $password)
+            && $this->userManager->is_user_verified($login))
         {
             $_SESSION["user"] = $login;
             return true;

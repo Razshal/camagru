@@ -307,4 +307,12 @@ class UserManager extends DatabaseManager
         return $this->change_password($user["login"], $password)
             && $this->drop_reset_token($mail);
     }
+
+    public function is_user_verified($login)
+    {
+        if (($user = $this->get_user($login))
+            && $user["is_verified"] == 1)
+            return true;
+        return false;
+    }
 }
