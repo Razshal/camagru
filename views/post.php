@@ -5,17 +5,15 @@
 
 <div id="cameraPlace">
     <video autoplay id="video"></video>
+    <canvas id="canvas"></canvas>
 </div>
 <div id="buttons">
     <button id="captureButton" disabled>Snap</button>
     <button id="clearButton">Clear</button>
 </div>
 <div id="filtersBar">
+</div>
 
-</div>
-<div id="preview">
-    <canvas id="canvas"></canvas>
-</div>
 Or send from your computer<br/>
 <input type="file" accept="image/*" name="userFile" id="userFile"/>
 <input type="text" name="title" placeholder="Post title"/>

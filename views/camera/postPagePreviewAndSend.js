@@ -6,6 +6,7 @@ function userError(message)
     errorPlace.style.display = "block";
     errorElem.innerHTML = message.toString();
     errorElem.classList.add('error');
+    errorElem.onclick = () => errorElem.parentNode.removeChild(errorElem);
     errorPlace.appendChild(errorElem);
 }
 
@@ -67,6 +68,7 @@ window.onload = async () =>
         canvas.style.display = 'block';
         canvas.width = video.width;
         canvas.height = video.height;
+        video.style.display = 'none';
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
         document.getElementById('preview')
             .appendChild(document.getElementsByClassName('filter')[0]);
@@ -196,17 +198,25 @@ window.onload = async () =>
         const xhr = new XMLHttpRequest();
         let formData = new FormData();
 
+        if (cameraAccess && !captureButton.disabled)
+            formData.append('image', canvas.toDataURL());
+        else if (userFile.files[0])
+            formData.append('image', userFile.files[0]);
+        else
+        {
+            userError('You must first capture an image ' +
+                'or choose on from your computer');
+            return;
+        }
         xhr.open('POST', '/index.php?action=post', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = () =>
         {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
-            {
                 userSucess('Posted');
-            }
             else
-                userError('Server reffused post');
+                userError('Cannot send to server, please retry later');
         };
-        xhr.send('');
+        xhr.send(formData);
     }
 };
