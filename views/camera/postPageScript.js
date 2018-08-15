@@ -30,12 +30,16 @@ window.onload = async () =>
             }
         };
 
+    captureButton.disabled = true;
+
     /************** Clear all setup button **************/
 
     clearButton.onclick = () =>
     {
         let actualFilters = document.getElementsByClassName('filter');
         let imageObjects = document.getElementsByClassName('obj');
+
+        captureButton.disabled = true;
         while (actualFilters[0])
             actualFilters[0].parentNode.removeChild(actualFilters[0]);
         while (imageObjects[0])
@@ -129,7 +133,10 @@ window.onload = async () =>
             let filter = new Image();
             let actualFilters = document.getElementsByClassName('filter');
 
-            clearButton.onclick();
+            while (actualFilters[0])
+                actualFilters[0].parentNode.removeChild(actualFilters[0]);
+            canvas.style.display = 'none';
+            captureButton.disabled = false;
             filter.src = event.target.src;
             filter.classList.add('filter');
             filter.width = video.width;
