@@ -121,12 +121,15 @@ window.onload = async () =>
     filters.forEach((elem) =>
     {
         let filterPreview = new Image();
+
         filterPreview.src = elem;
         filterPreview.classList.add('filterPreview');
         filterPreview.onclick = (event) =>
         {
             let filter = new Image();
             let actualFilters = document.getElementsByClassName('filter');
+
+            clearButton.onclick();
             filter.src = event.target.src;
             filter.classList.add('filter');
             filter.width = video.width;
