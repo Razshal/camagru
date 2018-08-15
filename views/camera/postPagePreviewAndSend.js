@@ -194,6 +194,7 @@ window.onload = async () =>
     sendButton.onclick = () =>
     {
         const xhr = new XMLHttpRequest();
+        let formData = new FormData();
 
         xhr.open('POST', '/index.php?action=post', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

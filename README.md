@@ -1,13 +1,14 @@
-# camagru
+# Camagru
 Basic image sharing website with filters, 42 school project
 
-### No framework auhtorized
+### No framework authorised
 Except pure css frameworks
 
-### Images must be assembled on the server side
+### Final image must be assembled on the server side
+But there is a Js preview
 
 ### Mails
-Confirm account, reset password, notificaitons
+Confirm account, reset password, notifications
 
 ### Security
 Avoid sql injections, properly store user datas, avoid unauthorized uploads, etc
