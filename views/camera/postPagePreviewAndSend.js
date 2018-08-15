@@ -60,6 +60,18 @@ window.onload = async () =>
         video.style.display = 'block';
     };
 
+    /************** Camera button **************/
+
+    captureButton.onclick = () =>
+    {
+        canvas.style.display = 'block';
+        canvas.width = video.width;
+        canvas.height = video.height;
+        canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
+        document.getElementById('preview')
+            .appendChild(document.getElementsByClassName('filter')[0]);
+    };
+
     /************** Camera preview dynamic size **************/
 
     if (document.body.clientWidth <= 1024)
@@ -113,19 +125,6 @@ window.onload = async () =>
                 userError(error.name + ": " + error.message);
         });
 
-    /************** Camera Caption **************/
-
-    // if (!document.getElementsByClassName('filter')[0])
-
-    captureButton.onclick = () =>
-    {
-        canvas.style.display = 'block';
-        canvas.width = video.width;
-        canvas.height = video.height;
-        canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
-        document.getElementById('preview')
-            .appendChild(document.getElementsByClassName('filter')[0]);
-    };
 
     /************** Filters **************/
 
@@ -198,7 +197,8 @@ window.onload = async () =>
 
         xhr.open('POST', '/index.php?action=post', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = () => {
+        xhr.onreadystatechange = () =>
+        {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
             {
                 userSucess('Posted');
@@ -206,8 +206,6 @@ window.onload = async () =>
             else
                 userError('Server reffused post');
         };
-        xhr.send('')
+        xhr.send('');
     }
-
-
 };
