@@ -4,7 +4,10 @@
 <div id="cameraPlace">
     <video autoplay id="video"></video>
 </div>
-<button id="captureButton">Snap</button>
+<div id="buttons">
+    <button id="captureButton">Snap</button>
+    <button id="clearButton">Clear</button>
+</div>
 <div id="filtersBar">
 
 </div>
@@ -15,6 +18,6 @@ Or send from your computer<br/>
 <input type="file" accept="image/*" name="userFile" id="userFile"/>
 <input type="text" name="title" placeholder="Post title"/>
 <textarea placeholder="Post description" name="text"></textarea>
-<button id="submit">Send</button>
+<button id="sendButton">Send</button>
 
 <?php $content = ob_get_clean(); ?>

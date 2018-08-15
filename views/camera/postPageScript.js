@@ -1,9 +1,21 @@
-window.onload = async () => {
+function userError(message)
+{
+    let errorPlace = document.getElementById("errorPlace");
+    let errorElem = document.createElement('p');
 
+    errorPlace.style.display = "block";
+    errorElem.innerHTML = message.toString();
+    errorElem.classList.add('error');
+    errorPlace.appendChild(errorElem);
+}
+
+window.onload = async () =>
+{
+    const sendButton = document.getElementById('sendButton');
     const captureButton = document.getElementById('captureButton');
+    const clearButton = document.getElementById('clearButton');
     const video = document.getElementById('video');
     const userFile = document.getElementById("userFile");
-    const errorPlace = document.getElementById("errorPlace");
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
     const filtersBar = document.getElementById('filtersBar');
@@ -18,12 +30,30 @@ window.onload = async () => {
             }
         };
 
+    /************** Clear all setup button **************/
+
+    clearButton.onclick = () =>
+    {
+        let actualFilters = document.getElementsByClassName('filter');
+        let imageObjects = document.getElementsByClassName('obj');
+        while (actualFilters[0])
+            actualFilters[0].parentNode.removeChild(actualFilters[0]);
+        while (imageObjects[0])
+            imageObjects[0].parentNode.removeChild(imageObjects[0]);
+
+        captureButton.style.display = 'inline-block';
+        canvas.style.display = 'none';
+        video.style.display = 'block';
+    };
+
     /************** Camera preview dynamic size **************/
 
-    if (document.body.clientWidth <= 1024) {
+    if (document.body.clientWidth <= 1024)
+    {
         cameraPlace.width = document.body.clientWidth;
         video.width = document.body.clientWidth;
-    } else
+    }
+    else
         video.width = 1024;
     video.height = video.width / 16 * 9;
     cameraPlace.height = cameraPlace.width / 16 * 9;
@@ -32,31 +62,39 @@ window.onload = async () => {
 
     if (navigator.mediaDevices === undefined)
         navigator.mediaDevices = {};
-    if (navigator.mediaDevices.getUserMedia === undefined) {
-        navigator.mediaDevices.getUserMedia = constraints => {
+    if (navigator.mediaDevices.getUserMedia === undefined)
+    {
+        navigator.mediaDevices.getUserMedia = constraints =>
+        {
             let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
             if (!getUserMedia)
-                return Promise.reject(new Error('Cannot use camera with your browser'));
-            return new Promise(function(resolve, reject) {
-                getUserMedia.call(navigator, constraints, resolve, reject);
-            });
+            {
+                let message = 'Cannot use camera with your browser';
+                userError(message);
+            }
+            else
+            {
+                return new Promise(function (resolve, reject) {
+                    getUserMedia.call(navigator, constraints, resolve, reject);
+                });
+            }
         }
     }
     navigator.mediaDevices.getUserMedia(cameraConstraints)
-        .then(function(stream) {
+        .then(function(stream)
+        {
             if ("srcObject" in video)
                 video.srcObject = stream;
             else
                 video.src = window.URL.createObjectURL(stream);
             video.onloadedmetadata = video.play();
         })
-        .catch(function(error) {
-            errorPlace.style.display = "block";
+        .catch(function(error)
+        {
             if (error.name === "NotAllowedError")
-                errorPlace.innerHTML = "Camera access not allowed";
+                userError("Camera access not allowed");
             else
-                errorPlace.innerHTML = error.name + ": " + error.message;
-            errorPlace.classList.add("error");
+                userError(error.name + ": " + error.message);
         });
 
     /************** Camera Caption **************/
@@ -64,7 +102,8 @@ window.onload = async () => {
     // if (!document.getElementsByClassName('filter')[0])
 
 
-    captureButton.onclick = () => {
+    captureButton.onclick = () =>
+    {
         canvas.style.display = 'block';
         canvas.width = video.width;
         canvas.height = video.height;
@@ -79,11 +118,13 @@ window.onload = async () => {
     filters[1] = "/views/camera/filters/Anon.png";
     filters[2] = "/views/camera/filters/Carnival.png";
 
-    filters.forEach((elem) => {
+    filters.forEach((elem) =>
+    {
         let filterPreview = new Image();
         filterPreview.src = elem;
         filterPreview.classList.add('filterPreview');
-        filterPreview.onclick = (event) => {
+        filterPreview.onclick = (event) =>
+        {
             let filter = new Image();
             let actualFilters = document.getElementsByClassName('filter');
             filter.src = event.target.src;
@@ -97,12 +138,45 @@ window.onload = async () => {
         filtersBar.appendChild(filterPreview);
     });
 
-    /************** Load User Picture **************/
+    /************** User upload preview **************/
 
-    userFile.onchange = () => {
-        let userImage = new Image();
-        userImage.src = this.files[0];
-        video.style.display = "none";
+    userFile.onchange = () =>
+    {
+        let file = userFile.files[0];
+        let imageType = /^image\//;
+        let userImage = document.createElement('img');
+        let reader;
+
+        clearButton.onclick();
+        captureButton.style.display = 'none';
+        if (!window.FileReader)
+            userError('Cannot preview file with your browser');
+        if (!imageType.test(file.type))
+        {
+            userError('Not an image file,' +
+                'refresh the page and try with another file');
+            return;
+        }
+        userImage.classList.add('obj');
+        userImage.file = file;
+        userImage.width = video.width;
+        userImage.height = video.height;
+        video.style.display = 'none';
         cameraPlace.appendChild(userImage);
+
+        reader = new FileReader();
+        reader.onload = (event) => userImage.src = event.target.result;
+        reader.readAsDataURL(file);
     };
+
+    /************** Send **************/
+
+    // sendButton.onclick = () =>
+    // {
+    //     if (!userFile.files[0] && !canvas.style.display === )
+    //     const req = new XMLHttpRequest();
+    //     req.open('GET')
+    // }
+
+
 };

@@ -2,6 +2,10 @@
     display: none;
 }
 
+#video {
+    display: block;
+}
+
 #cameraPlace {
     position: relative;
     background-color: gray;
@@ -10,7 +14,7 @@
 #filtersBar {
     min-width: 300px;
     min-height: 100px;
-    background-color: #e98e4e;
+    background-color: antiquewhite;
 }
 
 .filterPreview {
@@ -30,4 +34,8 @@
 
 #preview {
     position: relative;
+}
+
+.obj {
+    display: block;
 }
