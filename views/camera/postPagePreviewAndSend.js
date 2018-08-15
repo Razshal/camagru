@@ -9,8 +9,20 @@ function userError(message)
     errorPlace.appendChild(errorElem);
 }
 
+function userSucess(message)
+{
+    let errorPlace = document.getElementById("errorPlace");
+    let successElem = document.createElement('p');
+
+    errorPlace.style.display = "block";
+    successElem.innerHTML = message.toString();
+    successElem.classList.add('success');
+    errorPlace.appendChild(successElem);
+}
+
 window.onload = async () =>
 {
+    let cameraAccess = false;
     const sendButton = document.getElementById('sendButton');
     const captureButton = document.getElementById('captureButton');
     const clearButton = document.getElementById('clearButton');
@@ -29,8 +41,6 @@ window.onload = async () =>
                 facingMode: 'user'
             }
         };
-
-    captureButton.disabled = true;
 
     /************** Clear all setup button **************/
 
@@ -78,15 +88,15 @@ window.onload = async () =>
             }
             else
             {
-                return new Promise(function (resolve, reject) {
-                    getUserMedia.call(navigator, constraints, resolve, reject);
-                });
+                return new Promise((resolve, reject) =>
+                    getUserMedia.call(navigator, constraints, resolve, reject));
             }
         }
     }
     navigator.mediaDevices.getUserMedia(cameraConstraints)
         .then(function(stream)
         {
+            cameraAccess = true;
             if ("srcObject" in video)
                 video.srcObject = stream;
             else
@@ -95,6 +105,8 @@ window.onload = async () =>
         })
         .catch(function(error)
         {
+            cameraAccess = false;
+            captureButton.disabled = true;
             if (error.name === "NotAllowedError")
                 userError("Camera access not allowed");
             else
@@ -104,7 +116,6 @@ window.onload = async () =>
     /************** Camera Caption **************/
 
     // if (!document.getElementsByClassName('filter')[0])
-
 
     captureButton.onclick = () =>
     {
@@ -136,7 +147,7 @@ window.onload = async () =>
             while (actualFilters[0])
                 actualFilters[0].parentNode.removeChild(actualFilters[0]);
             canvas.style.display = 'none';
-            captureButton.disabled = false;
+            captureButton.disabled = !cameraAccess;
             filter.src = event.target.src;
             filter.classList.add('filter');
             filter.width = video.width;
@@ -181,12 +192,22 @@ window.onload = async () =>
 
     /************** Send **************/
 
-    // sendButton.onclick = () =>
-    // {
-    //     if (!userFile.files[0] && !canvas.style.display === )
-    //     const req = new XMLHttpRequest();
-    //     req.open('GET')
-    // }
+    sendButton.onclick = () =>
+    {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/index.php?action=post', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = () => {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
+            {
+                userSucess('Posted');
+            }
+            else
+                userError('Server reffused post');
+        };
+        xhr.send('')
+    }
 
 
 };

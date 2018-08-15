@@ -1,11 +1,13 @@
 <?php ob_start(); ?>
-<script src="views/camera/postPageScript.js"></script>
+
+<script src="views/camera/postPagePreviewAndSend.js"></script>
 <link rel="stylesheet" type="text/css" href="/views/style/postPage.css">
+
 <div id="cameraPlace">
     <video autoplay id="video"></video>
 </div>
 <div id="buttons">
-    <button id="captureButton">Snap</button>
+    <button id="captureButton" disabled>Snap</button>
     <button id="clearButton">Clear</button>
 </div>
 <div id="filtersBar">
