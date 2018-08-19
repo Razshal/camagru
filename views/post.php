@@ -1,5 +1,4 @@
 <?php ob_start(); ?>
-
 <script src="views/camera/postPagePreviewAndSend.js"></script>
 <link rel="stylesheet" type="text/css" href="/views/style/postPage.css">
 
@@ -13,11 +12,9 @@
 </div>
 <div id="filtersBar">
 </div>
-
 Or send from your computer<br/>
 <input type="file" accept="image/*" name="userFile" id="userFile"/>
-<input type="text" name="title" placeholder="Post title"/>
-<textarea placeholder="Post description" name="text"></textarea>
+<input id="title" type="text" name="title" placeholder="Post title"/>
+<textarea id="desc" placeholder="Post description" name="text"></textarea>
 <button id="sendButton">Send</button>
-
 <?php $content = ob_get_clean(); ?>

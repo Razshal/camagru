@@ -1,24 +1,14 @@
-function userError(message)
+function userLog(type, message)
 {
     let errorPlace = document.getElementById("errorPlace");
     let errorElem = document.createElement('p');
 
     errorPlace.style.display = "block";
     errorElem.innerHTML = message.toString();
-    errorElem.classList.add('error');
-    errorElem.onclick = () => errorElem.parentNode.removeChild(errorElem);
+    errorElem.classList.add(type);
+    errorElem.onclick = () =>
+        errorElem.parentNode.removeChild(errorElem);
     errorPlace.appendChild(errorElem);
-}
-
-function userSucess(message)
-{
-    let errorPlace = document.getElementById("errorPlace");
-    let successElem = document.createElement('p');
-
-    errorPlace.style.display = "block";
-    successElem.innerHTML = message.toString();
-    successElem.classList.add('success');
-    errorPlace.appendChild(successElem);
 }
 
 window.onload = async () =>
@@ -92,12 +82,10 @@ window.onload = async () =>
     {
         navigator.mediaDevices.getUserMedia = constraints =>
         {
-            let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            let getUserMedia = navigator.webkitGetUserMedia
+                || navigator.mozGetUserMedia;
             if (!getUserMedia)
-            {
-                let message = 'Cannot use camera with your browser';
-                userError(message);
-            }
+                userLog('error', 'Cannot use camera with your browser');
             else
             {
                 return new Promise((resolve, reject) =>
@@ -114,15 +102,14 @@ window.onload = async () =>
             else
                 video.src = window.URL.createObjectURL(stream);
             video.onloadedmetadata = video.play();
-        })
-        .catch(function(error)
+        }).catch(function(error)
         {
             cameraAccess = false;
             captureButton.disabled = true;
             if (error.name === "NotAllowedError")
-                userError("Camera access not allowed");
+                userLog('error', "Camera access not allowed");
             else
-                userError(error.name + ": " + error.message);
+                userLog('error', error.name + ": " + error.message);
         });
 
 
@@ -170,10 +157,10 @@ window.onload = async () =>
         clearButton.onclick();
         captureButton.style.display = 'none';
         if (!window.FileReader)
-            userError('Cannot preview file with your browser');
+            userLog('error', 'Cannot preview file with your browser');
         if (!imageType.test(file.type))
         {
-            userError('Not an image file,' +
+            userLog('error', 'Not an image file,' +
                 'refresh the page and try with another file');
             return;
         }
@@ -193,23 +180,37 @@ window.onload = async () =>
 
     sendButton.onclick = () =>
     {
+        //Preparing form with text and user pictures
         let formData = new FormData();
 
         formData.enctype = 'multipart/form-data';
+        formData.append('title',
+            document.getElementById('title').textContent);
+        formData.append('desc',
+            document.getElementById('desc').textContent);
+        formData.append('filter',
+            document.getElementsByClassName('filter')[0].src);
         if (cameraAccess && !captureButton.disabled)
             formData.append('image', canvas.toDataURL());
         else if (userFile.files[0])
             formData.append('image', userFile.files[0]);
         else
         {
-            userError('You must first capture an image ' +
+            userLog('error', 'You must first capture an image ' +
                 'or choose on from your computer');
             return;
         }
-        fetch('/index.php?action=post', {
+        //Sending form to the server
+        fetch('index.php?action=post', {
             method: 'POST',
-            body: 'formData',
+            body: formData,
             credentials: 'include'
-        }).then(response => console.log(response));
+        }).then(response =>
+        {
+            if (response.status === 200)
+                userLog('success', 'Your image has been posted');
+            else
+                userLog('error', 'Error treating your image, please retry');
+        });
     }
 };
