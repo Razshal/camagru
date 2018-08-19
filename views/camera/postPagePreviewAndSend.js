@@ -32,6 +32,7 @@ window.onload = async () =>
                 facingMode: 'user'
             }
         };
+    let fileToSend;
 
     /************** Clear all setup button **************/
 
@@ -60,6 +61,7 @@ window.onload = async () =>
         canvas.height = video.height;
         video.style.display = 'none';
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
+        fileToSend = canvas.toDataURL();
     };
 
     /************** Camera preview dynamic size **************/
@@ -171,9 +173,11 @@ window.onload = async () =>
         userImage.height = video.height;
         video.style.display = 'none';
         cameraPlace.appendChild(userImage);
-
         reader = new FileReader();
-        reader.onload = (event) => userImage.src = event.target.result;
+        reader.onload = (event) => {
+            fileToSend = event.target.result;
+            userImage.src = event.target.result;
+        };
         reader.readAsDataURL(file);
     };
 
@@ -184,6 +188,12 @@ window.onload = async () =>
         //Preparing form with text and user pictures
         let formData = new FormData();
 
+        if (!fileToSend || !document.getElementsByClassName('filter')[0])
+        {
+            userLog('error', 'You must capture an image ' +
+                'or choose one from your computer and add a filter');
+            return;
+        }
         formData.enctype = 'multipart/form-data';
         formData.append('title',
             document.getElementById('title').textContent);
@@ -191,16 +201,8 @@ window.onload = async () =>
             document.getElementById('desc').textContent);
         formData.append('filter',
             document.getElementsByClassName('filter')[0].src);
-        if (cameraAccess && !captureButton.disabled)
-            formData.append('image', canvas.toDataURL());
-        else if (userFile.files[0])
-            formData.append('image', userFile.files[0]);
-        else
-        {
-            userLog('error', 'You must first capture an image ' +
-                'or choose on from your computer');
-            return;
-        }
+        formData.append('image', fileToSend);
+        console.log(fileToSend);
         //Sending form to the server
         fetch('index.php?action=post', {
             method: 'POST',
