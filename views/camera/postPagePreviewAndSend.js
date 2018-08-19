@@ -70,8 +70,6 @@ window.onload = async () =>
         canvas.height = video.height;
         video.style.display = 'none';
         canvas.getContext('2d').drawImage(video, 0, 0, video.width, video.height);
-        document.getElementById('preview')
-            .appendChild(document.getElementsByClassName('filter')[0]);
     };
 
     /************** Camera preview dynamic size **************/
@@ -145,16 +143,16 @@ window.onload = async () =>
             let filter = new Image();
             let actualFilters = document.getElementsByClassName('filter');
 
+            if (canvas.style.display === 'block') //Avoid filter preview bug
+                clearButton.onclick();
+            canvas.style.display = 'none';
             while (actualFilters[0])
                 actualFilters[0].parentNode.removeChild(actualFilters[0]);
-            canvas.style.display = 'none';
             captureButton.disabled = !cameraAccess;
             filter.src = event.target.src;
             filter.classList.add('filter');
             filter.width = video.width;
             filter.height = video.height;
-            while (actualFilters[0])
-                actualFilters[0].parentNode.removeChild(actualFilters[0]);
             cameraPlace.appendChild(filter);
         };
         filtersBar.appendChild(filterPreview);
@@ -195,9 +193,9 @@ window.onload = async () =>
 
     sendButton.onclick = () =>
     {
-        const xhr = new XMLHttpRequest();
         let formData = new FormData();
 
+        formData.enctype = 'multipart/form-data';
         if (cameraAccess && !captureButton.disabled)
             formData.append('image', canvas.toDataURL());
         else if (userFile.files[0])
@@ -208,15 +206,10 @@ window.onload = async () =>
                 'or choose on from your computer');
             return;
         }
-        xhr.open('POST', '/index.php?action=post', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = () =>
-        {
-            if (this.readyState === XMLHttpRequest.DONE && this.status === 200)
-                userSucess('Posted');
-            else
-                userError('Cannot send to server, please retry later');
-        };
-        xhr.send(formData);
+        fetch('/index.php?action=post', {
+            method: 'POST',
+            body: 'formData',
+            credentials: 'include'
+        }).then(response => console.log(response));
     }
 };
