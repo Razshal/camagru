@@ -155,6 +155,7 @@ window.onload = async () =>
         let reader;
 
         clearButton.onclick();
+        captureButton.disabled = true;
         captureButton.style.display = 'none';
         if (!window.FileReader)
             userLog('error', 'Cannot preview file with your browser');
