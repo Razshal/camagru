@@ -11,15 +11,13 @@ date_default_timezone_set("Europe/Paris");
 
 $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
-$siteManager = new siteManager();
 
 try
 {
+    $siteManager = new siteManager();
     $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD,
         $SITE_ADDRESS, $RESET_PASSWORD_TOKEN_VALIDITY);
     $sessionManager = new SessionManager($userManager);
-    if (!$sessionManager->is_logged_user_valid())
-            $sessionManager->log_out_user();
 }
 catch (Exception $e)
 {
@@ -28,6 +26,9 @@ catch (Exception $e)
     $siteManager->strong_error_log($DB_ERROR);
     $content = "";
 }
+
+if (!$sessionManager->is_logged_user_valid())
+    $sessionManager->log_out_user();
 
 /************* Router ************/
 

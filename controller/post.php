@@ -7,22 +7,22 @@ if (isset($_POST) && isset($_POST['image'])
 {
     $width = 1280;
     $height = 720;
-    $filter = $_SERVER["DOCUMENT_ROOT"] . '/views/camera/filters/' . $filter;
+    $filter = imagecreatefrompng($_SERVER["DOCUMENT_ROOT"] . '/views/camera/filters/' . $filter);
     $finalImage = imagecreatetruecolor($width, $height);
     $receivedImage = imagecreatefromstring(file_get_contents($_POST['image']));
+    $finalImageName = $_SERVER["DOCUMENT_ROOT"]
+        . '/user_images/'. $sessionManager->get_logged_user_name()
+        . '_' . date( 'd_m_Y.H:i:s') .'.png';
 
     if (!imagecopyresampled($finalImage, $receivedImage,
         0, 0, 0, 0,
         $width, $height, $imageSize[0], $imageSize[1])
-        || !imagedestroy($receivedImage)
-        || !($filter = imagecreatefrompng($filter))
-        || imagecopy($finalImage, $filter,
+        || !imagecopy($finalImage, $filter,
             0, 0, 0, 0,
             $width, $height)
-        || !imagedestroy($filter)
-        || !imagepng($finalImage, $_SERVER["DOCUMENT_ROOT"]
-        . '/user_images/'. $sessionManager->get_logged_user_name()
-        . '_' . date( 'd_m_Y.H:i:s') .'.png'))
+        || !imagepng($finalImage, $finalImageName)
+        || !imagedestroy($receivedImage)
+        || !imagedestroy($filter))
     {
         header('HTTP/1.1 400 Bad Request');
         var_dump($filter);
