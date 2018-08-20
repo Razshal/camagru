@@ -165,7 +165,7 @@ window.onload = async () =>
             userLog('error', 'Cannot preview file with your browser');
         if (!imageType.test(file.type))
         {
-            userLog('error', 'Not an image file,' +
+            userLog('error', 'Not an image file, ' +
                 'refresh the page and try with another file');
             return;
         }
@@ -197,14 +197,11 @@ window.onload = async () =>
             return;
         }
         formData.enctype = 'multipart/form-data';
-        formData.append('title',
-            document.getElementById('title').textContent);
         formData.append('desc',
-            document.getElementById('desc').textContent);
+            document.getElementById('desc').value);
         formData.append('filter',
             document.getElementsByClassName('filter')[0].src);
         formData.append('image', fileToSend);
-        console.log(fileToSend);
         //Sending form to the server
         fetch('index.php?action=post', {
             method: 'POST',

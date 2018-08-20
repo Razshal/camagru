@@ -5,6 +5,7 @@ if (isset($_POST) && isset($_POST['image'])
     && ($filter = substr($_POST['filter'], strrpos($_POST['filter'], '/') + 1))
     && file_exists($_SERVER["DOCUMENT_ROOT"] . '/views/camera/filters/' . $filter))
 {
+    var_dump($_POST);
     $width = 1280;
     $height = 720;
     $filter = imagecreatefrompng($_SERVER["DOCUMENT_ROOT"] . '/views/camera/filters/' . $filter);
@@ -22,10 +23,13 @@ if (isset($_POST) && isset($_POST['image'])
             $width, $height)
         || !imagepng($finalImage, $finalImageName)
         || !imagedestroy($receivedImage)
-        || !imagedestroy($filter))
+        || !imagedestroy($filter)
+        || !$userManager->new_post(
+            $sessionManager->get_logged_user_name(),
+            $finalImageName,
+            $_POST['desc']))
     {
         header('HTTP/1.1 400 Bad Request');
-        var_dump($filter);
     }
     else
         header('HTTP/1.1 201 Created');

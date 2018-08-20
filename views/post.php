@@ -14,7 +14,6 @@
 </div>
 Or send from your computer<br/>
 <input type="file" accept="image/*" name="userFile" id="userFile"/>
-<input id="title" type="text" name="title" placeholder="Post title"/>
 <textarea id="desc" placeholder="Post description" name="text"></textarea>
 <button id="sendButton">Send</button>
 <?php $content = ob_get_clean(); ?>

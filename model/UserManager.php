@@ -315,4 +315,25 @@ class UserManager extends DatabaseManager
             return true;
         return false;
     }
+
+    public function new_post($login, $image, $description)
+    {
+        try {
+            if (empty($user = $this->get_user($login)))
+                return false;
+            $query = $this->PDO->prepare("
+                INSERT INTO post VALUES 
+                (NULL, :user_id, :image, :description, now());");
+            $query->execute(array(
+                ':user_id' => $user['id'],
+                ':image' => $image,
+                ':description' => $description
+            ));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
 }
