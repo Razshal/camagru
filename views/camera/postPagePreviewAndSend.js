@@ -212,7 +212,7 @@ window.onload = async () =>
             credentials: 'include'
         }).then(response =>
         {
-            if (response.status === 200)
+            if (response.status === 200 || response.status === 201)
                 userLog('success', 'Your image has been posted');
             else
                 userLog('error', 'Error treating your image, please retry');
