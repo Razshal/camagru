@@ -13,7 +13,8 @@ $title = "Camagru";
 $content = "<h2>Welcome To Camagru</h2>";
 $siteManager = new siteManager();
 
-try {
+try
+{
     $userManager = new UserManager($DB_DSN, $DB_USER, $DB_PASSWORD,
         $SITE_ADDRESS, $RESET_PASSWORD_TOKEN_VALIDITY);
     $sessionManager = new SessionManager($userManager);

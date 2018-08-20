@@ -14,6 +14,8 @@ function userLog(type, message)
 window.onload = async () =>
 {
     let cameraAccess = false;
+    let fileToSend;
+    const previewWidth = document.body.clientWidth - 50;
     const sendButton = document.getElementById('sendButton');
     const captureButton = document.getElementById('captureButton');
     const clearButton = document.getElementById('clearButton');
@@ -32,7 +34,7 @@ window.onload = async () =>
                 facingMode: 'user'
             }
         };
-    let fileToSend;
+
 
     /************** Clear all setup button **************/
 
@@ -68,11 +70,11 @@ window.onload = async () =>
 
     if (document.body.clientWidth <= 1024)
     {
-        cameraPlace.width = document.body.clientWidth;
-        video.width = document.body.clientWidth;
+        cameraPlace.width = previewWidth;
+        video.width = previewWidth;
     }
     else
-        video.width = 1024;
+        video.width = previewWidth;
     video.height = video.width / 16 * 9;
     cameraPlace.height = cameraPlace.width / 16 * 9;
 

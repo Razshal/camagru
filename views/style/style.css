@@ -91,6 +91,10 @@ a.link {
     border-radius: 10px;
 }
 
+#errorPlace {
+    display: block;
+}
+
 .error {
     font-size: 15px;
 }
