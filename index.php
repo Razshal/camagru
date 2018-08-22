@@ -35,51 +35,61 @@ if (!$sessionManager->is_logged_user_valid())
 if ($userManager != NULL && $sessionManager != NULL
     && isset($_GET) && isset($_GET["action"]))
 {
-    $content = "";
-    if ($_GET["action"] === "login")
-        require("controller/login.php");
-    else if ($_GET["action"] === "logout")
+    switch($_GET["action"])
     {
-        $sessionManager->log_out_user();
-        header('location: index.php');
-        die();
-    }
-    else if ($_GET["action"] === "setup")
-        require("config/setup.php");
-    else if ($_GET["action"] === "signin")
-        require("controller/signin.php");
-    else if ($_GET["action"] === "verify")
-    {
-        if (isset($_GET["user"]) && isset($_GET["token"])
-            && $userManager->verify_user($_GET["user"], $_GET["token"]))
-            $siteManager->success_log("Account activated");
-        else
-            $siteManager->error_log("Error wrong token/login");
-        $content = "";
-    }
-    else if ($_GET["action"] === "reset")
-        require("controller/password_reset.php");
-    else if ($_GET["action"] === "account" && $sessionManager->is_logged_user_valid())
-        require("controller/change_account.php");
-    else if ($_GET["action"] === "post")
-    {
-        if ($sessionManager->is_logged_user_valid())
-            require("controller/post.php");
-        else
-        {
-            header('location: index.php?action=login');
+        case 'login':
+            require("controller/login.php");
+            break;
+        case 'logout':
+            $sessionManager->log_out_user();
+            header('location: index.php');
             die();
-        }
+        case 'setup':
+            require("config/setup.php");
+            break;
+        case 'signin':
+            require("controller/signin.php");
+            break;
+        case 'verify':
+            if (isset($_GET["user"]) && isset($_GET["token"])
+                && $userManager->verify_user($_GET["user"], $_GET["token"]))
+                $siteManager->success_log("Account activated");
+            else
+                $siteManager->error_log("Error wrong token/login");
+            break;
+        case 'reset':
+            require("controller/password_reset.php");
+            break;
+        case 'account':
+            if ($sessionManager->is_logged_user_valid())
+                require("controller/change_account.php");
+            else
+                require("controller/login.php");
+            break;
+        case 'post':
+            if ($sessionManager->is_logged_user_valid())
+                require("controller/post.php");
+            else
+            {
+                header('location: index.php?action=login');
+                die();
+            }
+            break;
+        case 'getUserPosts':
+            if (isset($_GET['user'])
+                && $sessionManager->is_logged_user_valid()
+                && $posts = $userManager->get_user_posts($_GET['user']))
+            {
+                header('Content-Type: application/json;charset=utf-8');
+                print json_encode($posts, JSON_FORCE_OBJECT);
+                die();
+            }
+        case 'deletePost':
+            require('controller/delete_post.php');
+            break;
+        default:
+            $content = "Error 404 : This page doesn't exists";
+            header('HTTP/1.1 404 Not Found');
     }
-    else if ($_GET['action'] === 'getUserPosts' && isset($_GET['user'])
-        && $sessionManager->is_logged_user_valid()
-        && $posts = $userManager->get_user_posts($_GET['user']))
-    {
-        header('Content-Type: application/json;charset=utf-8');
-        print json_encode($posts, JSON_FORCE_OBJECT);
-        die();
-    }
-    else if ($_GET['action'] === 'deletePost')
-        require('controller/delete_post.php');
 }
 require ("views/structure/template.php");
