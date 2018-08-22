@@ -11,6 +11,45 @@ function userLog(type, message)
     errorPlace.appendChild(errorElem);
 }
 
+function newPostPreview(image)
+{
+    let img = document.createElement('img');
+    let previewArea = document.getElementById('previousPosts');
+
+    img.classList.add('previewElem');
+    img.src = image;
+    img.id = image;
+    img.onclick = () =>
+    {
+        if (confirm("Would you like to delete this post ?"))
+        {
+            let formData = new FormData();
+
+            console.log(this);
+            formData.append('image', image);
+            fetch('index.php?action=deletePost', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            }).then(response =>
+            {
+                if (response.status === 200)
+                {
+                    userLog('success', 'Your image has been deleted');
+                    previewArea.childNodes.forEach(post =>
+                    {
+                        if (post.src === image)
+                            post.parentNode.removeChild(post);
+                    });
+                }
+                else
+                    userLog('error', 'Error deleting your image, please retry later');
+            });
+        }
+    };
+    previewArea.appendChild(img);
+}
+
 window.onload = async () =>
 {
     let cameraAccess = false;
@@ -24,6 +63,7 @@ window.onload = async () =>
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
     const filtersBar = document.getElementById('filtersBar');
+    const previousPosts = document.getElementById('previousPosts');
     const filters = [];
     const cameraConstraints =
         {
@@ -34,7 +74,6 @@ window.onload = async () =>
                 facingMode: 'user'
             }
         };
-
 
     /************** Clear all setup button **************/
 
@@ -115,7 +154,6 @@ window.onload = async () =>
             else
                 userLog('error', error.name + ": " + error.message);
         });
-
 
     /************** Filters **************/
 
@@ -218,4 +256,15 @@ window.onload = async () =>
 
     /************** Preview posts **************/
 
+    fetch('http://localhost:8080/index.php?action=getUserPosts&user=mfonteni', {
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(posts =>
+            {
+                let i = 0;
+                while (posts[i])
+                    newPostPreview(posts[i++].image);
+            })
+        .catch(err => userLog('error', err));
 };

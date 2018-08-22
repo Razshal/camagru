@@ -356,4 +356,38 @@ class UserManager extends DatabaseManager
             return false;
         }
     }
+
+    public function get_user_post_by_image($image)
+    {
+        try {
+            $query = $this->PDO->prepare("
+            SELECT user.login, post.id, post.image, post.description, post.post_date
+            FROM post, user
+            WHERE post.image = :image");
+            $query->execute(array(
+                ':image' => $image
+            ));
+            return $query->fetchAll()[0];
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
+    public function delete_post($id)
+    {
+        try
+        {
+            $query = $this->PDO->prepare("
+                DELETE FROM post
+                WHERE post.id = :id");
+            $query->execute(array('id' => $id));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
 }

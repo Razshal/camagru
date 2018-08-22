@@ -76,8 +76,10 @@ if ($userManager != NULL && $sessionManager != NULL
         && $posts = $userManager->get_user_posts($_GET['user']))
     {
         header('Content-Type: application/json;charset=utf-8');
-        echo json_encode($posts);
+        print json_encode($posts, JSON_FORCE_OBJECT);
         die();
     }
+    else if ($_GET['action'] === 'deletePost')
+        require('controller/delete_post.php');
 }
 require ("views/structure/template.php");
