@@ -71,5 +71,13 @@ if ($userManager != NULL && $sessionManager != NULL
             die();
         }
     }
+    else if ($_GET['action'] === 'getUserPosts' && isset($_GET['user'])
+        && $sessionManager->is_logged_user_valid()
+        && $posts = $userManager->get_user_posts($_GET['user']))
+    {
+        header('Content-Type: application/json;charset=utf-8');
+        echo json_encode($posts);
+        die();
+    }
 }
 require ("views/structure/template.php");

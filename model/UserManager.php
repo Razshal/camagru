@@ -336,4 +336,24 @@ class UserManager extends DatabaseManager
             return false;
         }
     }
+
+    public function get_user_posts($login)
+    {
+        try {
+            if (empty($user = $this->get_user($login)))
+                return false;
+            $query = $this->PDO->prepare("
+            SELECT user.login, post.image, post.description, post.post_date
+            FROM post, user
+            WHERE user_id = :id");
+            $query->execute(array(
+                ':id' => $user['id']
+            ));
+            return $query->fetchAll();
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
 }
