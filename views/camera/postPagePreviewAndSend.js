@@ -18,7 +18,6 @@ function newPostPreview(image)
 
     img.classList.add('previewElem');
     img.src = image;
-    img.id = image;
     img.onclick = () =>
     {
         if (confirm("Would you like to delete this post ?"))
@@ -36,11 +35,7 @@ function newPostPreview(image)
                 if (response.status === 200)
                 {
                     userLog('success', 'Your image has been deleted');
-                    previewArea.childNodes.forEach(post =>
-                    {
-                        if (post.src === image)
-                            post.parentNode.removeChild(post);
-                    });
+                    img.parentNode.removeChild(img);
                 }
                 else
                     userLog('error', 'Error deleting your image, please retry later');

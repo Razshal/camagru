@@ -4,7 +4,7 @@ require_once ("config/database.php");
 require_once ("config/site.php");
 require_once ("model/UserManager.php");
 require_once ("model/SessionManager.php");
-require_once ("model/siteManager.php");
+require_once("model/SiteManager.php");
 date_default_timezone_set("Europe/Paris");
 
 /************* Manager and page init ************/
