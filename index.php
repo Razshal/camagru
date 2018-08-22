@@ -84,6 +84,9 @@ if ($userManager != NULL && $sessionManager != NULL
                 print json_encode($posts, JSON_FORCE_OBJECT);
                 die();
             }
+            else
+                require("controller/login.php");
+            break;
         case 'deletePost':
             require('controller/delete_post.php');
             break;
