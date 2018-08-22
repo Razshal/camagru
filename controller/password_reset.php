@@ -8,14 +8,14 @@ if (isset($_POST) && isset($_POST["mail"]) && isset($_POST["submit"])
     else
         $siteManager->error_log("Unable to send reset mail, 
         check if your mail is valid");
-    require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
+    require ($DOCUMENT_ROOT . "views/ask_password_reset.php");
 }
 else if (isset($_GET["token"]) && isset($_GET["mail"]))
 {
     if (!empty($user = $userManager->get_mail($_GET["mail"]))
         && $user[0]["reset_token"] === $_GET["token"])
     {
-        require ($_SERVER["DOCUMENT_ROOT"] . "/views/chose_new_password.php");
+        require ($DOCUMENT_ROOT . "views/chose_new_password.php");
     }
     else
         $siteManager->error_log("Wrong token/mail");
@@ -41,4 +41,4 @@ else if (isset($_POST) && isset($_POST["submit"])
         $siteManager->error_log("Invalid token");
 }
 else
-    require ($_SERVER["DOCUMENT_ROOT"] . "/views/ask_password_reset.php");
+    require ($DOCUMENT_ROOT . "views/ask_password_reset.php");

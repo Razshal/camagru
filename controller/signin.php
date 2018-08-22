@@ -25,4 +25,4 @@ if (isset($querySuccess) && $querySuccess === false)
 else if (isset($querySuccess) && $querySuccess === true)
     $siteManager->success_log("Account created");
 
-require($_SERVER["DOCUMENT_ROOT"] . "/views/signin_form.php");
+require($DOCUMENT_ROOT . "views/signin_form.php");

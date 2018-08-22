@@ -7,4 +7,4 @@ if (isset($auth) && $auth === false)
     $siteManager->error_log("Unable to connect, check you username/password and if your account is activated");
 else if ($sessionManager->is_logged_user_valid())
     $siteManager->success_log("Logged as {$sessionManager->get_logged_user_name()}");
-require ($_SERVER["DOCUMENT_ROOT"] . "/views/login_form.php");
+require ($DOCUMENT_ROOT . "views/login_form.php");

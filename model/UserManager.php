@@ -1,6 +1,6 @@
 <?php
 
-require_once ($_SERVER["DOCUMENT_ROOT"] . "/model/DatabaseManager.php");
+require_once ($DOCUMENT_ROOT . "model/DatabaseManager.php");
 
 class UserManager extends DatabaseManager
 {

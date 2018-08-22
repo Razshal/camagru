@@ -36,4 +36,4 @@ if (isset($_POST) && isset($_POST["oldPassword"])
     }
 
 }
-require($_SERVER["DOCUMENT_ROOT"] . "/views/account.php");
+require($DOCUMENT_ROOT . "/views/account.php");
