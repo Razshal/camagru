@@ -92,7 +92,7 @@ a.link {
 }
 
 #errorPlace {
-    display: block;
+    display: none;
 }
 
 .error {

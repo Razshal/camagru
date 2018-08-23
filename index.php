@@ -78,6 +78,9 @@ if ($userManager != NULL && $sessionManager != NULL
         case 'getUserPosts':
             require('controller/API_get_user_posts.php');
             break;
+        case 'getFilters':
+            require('controller/API_get_filters.php');
+            break;
         case 'whoAmI':
             require('controller/API_who_am_i.php');
             break;

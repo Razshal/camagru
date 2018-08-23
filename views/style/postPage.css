@@ -2,6 +2,10 @@
     display: none;
 }
 
+#capture {
+    display: none;
+}
+
 #video {
     display: block;
 }
@@ -45,3 +49,4 @@
 .previewElem:hover {
     cursor: pointer;
 }
+

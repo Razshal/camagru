@@ -1,16 +1,3 @@
-function userLog(type, message)
-{
-    let errorPlace = document.getElementById("errorPlace");
-    let errorElem = document.createElement('p');
-
-    errorPlace.style.display = "block";
-    errorElem.innerHTML = message.toString();
-    errorElem.classList.add(type);
-    errorElem.onclick = () =>
-        errorElem.parentNode.removeChild(errorElem);
-    errorPlace.appendChild(errorElem);
-}
-
 function newPostPreview(image)
 {
     let img = document.createElement('img');
@@ -24,7 +11,6 @@ function newPostPreview(image)
         {
             let formData = new FormData();
 
-            console.log(this);
             formData.append('image', image);
             fetch('index.php?action=deletePost', {
                 method: 'POST',
@@ -47,7 +33,7 @@ function newPostPreview(image)
 
 function whoAmI()
 {
-    return fetch('http://localhost:8080/index.php?action=whoAmI', {
+    return fetch('/index.php?action=whoAmI', {
         credentials: 'include'
     })
         .then(response => response.json())
@@ -55,10 +41,34 @@ function whoAmI()
         .catch(err => userLog('error', err));
 }
 
+async function loadPosts()
+{
+    let previousPosts = document.getElementById('previousPosts').childNodes;
+    console.log(previousPosts[0]);
+    while (previousPosts[0])
+    {
+        console.log('ici');
+        previousPosts[0].parentNode.removeChild(previousPosts[0]);
+    }
+    return fetch('/index.php?action=getUserPosts&user=' + await whoAmI(), {
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(posts =>
+    {
+        let i = 0;
+        while (posts[i])
+            newPostPreview(posts[i++].image);
+    })
+    .catch(err => userLog('error', err));
+}
+
 window.onload = async () =>
 {
     let cameraAccess = false;
     let fileToSend;
+    let filters = {};
+    let previousPosts = document.getElementById('previousPosts');
     const previewWidth = document.body.clientWidth - 50;
     const sendButton = document.getElementById('sendButton');
     const captureButton = document.getElementById('captureButton');
@@ -68,8 +78,6 @@ window.onload = async () =>
     const cameraPlace = document.getElementById('cameraPlace');
     const canvas = document.getElementById('canvas');
     const filtersBar = document.getElementById('filtersBar');
-    const previousPosts = document.getElementById('previousPosts');
-    const filters = [];
     const cameraConstraints =
         {
             audio: false,
@@ -162,15 +170,18 @@ window.onload = async () =>
 
     /************** Filters **************/
 
-    filters[0] = "/views/camera/filters/Batman.png";
-    filters[1] = "/views/camera/filters/Anon.png";
-    filters[2] = "/views/camera/filters/Carnival.png";
+    filters = await fetch('/index.php?action=getFilters', {
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(filters => {return filters})
+    .catch(err => userLog('error', err));
 
-    filters.forEach((elem) =>
+    for (let i = 0; filters[i]; i++)
     {
         let filterPreview = new Image();
 
-        filterPreview.src = elem;
+        filterPreview.src = filters[i];
         filterPreview.classList.add('filterPreview');
         filterPreview.onclick = (event) =>
         {
@@ -190,7 +201,7 @@ window.onload = async () =>
             cameraPlace.appendChild(filter);
         };
         filtersBar.appendChild(filterPreview);
-    });
+    }
 
     /************** User upload preview **************/
 
@@ -250,26 +261,18 @@ window.onload = async () =>
             method: 'POST',
             body: formData,
             credentials: 'include'
-        }).then(response =>
+        })
+        .then(response =>
         {
             if (response.status === 201)
                 userLog('success', 'Your image has been posted');
             else
                 userLog('error', 'Error treating your image, please retry later');
         });
+        loadPosts();
     };
 
     /************** Preview posts **************/
 
-    fetch('http://localhost:8080/index.php?action=getUserPosts&user=' + await whoAmI(), {
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(posts =>
-            {
-                let i = 0;
-                while (posts[i])
-                    newPostPreview(posts[i++].image);
-            })
-        .catch(err => userLog('error', err));
+    loadPosts();
 };

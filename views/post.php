@@ -20,7 +20,6 @@
         <button id="sendButton">Send</button>
     </div>
     <div id="previousPosts">
-
     </div>
 </div>
 <?php $content = ob_get_clean(); ?>
