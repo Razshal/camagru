@@ -45,6 +45,16 @@ function newPostPreview(image)
     previewArea.appendChild(img);
 }
 
+function whoAmI()
+{
+    return fetch('http://localhost:8080/index.php?action=whoAmI', {
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(login => {return login})
+        .catch(err => userLog('error', err));
+}
+
 window.onload = async () =>
 {
     let cameraAccess = false;
@@ -251,7 +261,7 @@ window.onload = async () =>
 
     /************** Preview posts **************/
 
-    fetch('http://localhost:8080/index.php?action=getUserPosts&user=mfonteni', {
+    fetch('http://localhost:8080/index.php?action=getUserPosts&user=' + await whoAmI(), {
         credentials: 'include'
     })
         .then(response => response.json())
