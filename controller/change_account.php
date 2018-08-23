@@ -35,10 +35,10 @@ if (isset($_POST) && isset($_POST["oldPassword"])
             $siteManager->error_log("Unable to change mail : mail is not valid");
     }
     if (isset($_POST["notifications"]))
-    {
-        if ($_POST["notifications"] === 'on')
-
-        var_dump($_POST['notifications']);
-    }
+        $userManager->toggle_notifications($sessionManager->get_logged_user_name(), 1);
+    else
+        $userManager->toggle_notifications($sessionManager->get_logged_user_name(), 0);
 }
-require($DOCUMENT_ROOT . "/views/account.php");
+else if (isset($_POST) && !isset($_POST['oldPassword']))
+    $siteManager->error_log('Please confirm password');
+require ($DOCUMENT_ROOT . "/views/account.php");

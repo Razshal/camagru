@@ -10,8 +10,14 @@
         <input type="password" placeholder="Confirm your actual password" title="password" name="oldPassword"><br/>
         <a class="link">Receive mail for new comments on my posts</a>
         <input type="checkbox" title="notifications" name="notifications"
-               checked="<?=$userManager->get_user($sessionManager->get_logged_user_name())["notifications"]?>"><br/>
+               <?php
+               if ($userManager->get_user($sessionManager->
+                   get_logged_user_name())["notifications"] === '1')
+                   echo 'checked';?>><br/>
         <input class="submit" type="submit" title="send" name="submit" value="Change"><br/>
     </form>
 </h2>
-<?php $content = ob_get_clean(); ?>
+<?php $content = ob_get_clean();
+var_dump($userManager->get_user($sessionManager->get_logged_user_name())["notifications"]);
+
+?>

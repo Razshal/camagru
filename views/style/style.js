@@ -2,9 +2,12 @@ const errorPlace = document.getElementById("errorPlace");
 
 errorPlace.onclick = () =>
 {
-    if (errorPlace && errorPlace.children.length < 1)
+    if (errorPlace && !errorPlace.children)
         errorPlace.style.display = "none";
 };
+
+if (errorPlace && !errorPlace.children)
+    errorPlace.style.display = "none";
 
 function userLog(type, message)
 {

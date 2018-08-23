@@ -324,7 +324,7 @@ class UserManager extends DatabaseManager
         return false;
     }
 
-    public function toggle_notifications($login, $enable)
+    public function toggle_notifications($login, $activate)
     {
         try
         {
@@ -332,11 +332,11 @@ class UserManager extends DatabaseManager
                 return false;
             $query = $this->PDO->prepare("
             UPDATE user
-            SET notifications = :enable
+            SET notifications = :activate
             WHERE login LIKE :login");
             $query->execute(array(
                 ':login' => $login,
-                ':enable' => $enable
+                ':activate' => $activate
             ));
             return $query->rowCount() > 0;
         }
