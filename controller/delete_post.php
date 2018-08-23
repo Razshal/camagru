@@ -12,7 +12,6 @@ if (isset($_POST) && isset($_POST['image'])
 }
 else
 {
-    var_dump($post);
     header('HTTP/1.1 400 Bad Request');
     die();
 }

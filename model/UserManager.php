@@ -233,7 +233,8 @@ class UserManager extends DatabaseManager
 
     public function change_password($login, $password)
     {
-        try {
+        try
+        {
             if (empty($this->get_user($login)) || !$this->validNewPassword($password))
                 return false;
             $query = $this->PDO->prepare("
@@ -290,14 +291,21 @@ class UserManager extends DatabaseManager
 
     private function drop_reset_token($mail)
     {
-        if (empty($this->get_mail($mail)))
-            return false;
-        $query = $this->PDO->prepare("
+        try
+        {
+            if (empty($this->get_mail($mail)))
+                return false;
+            $query = $this->PDO->prepare("
             UPDATE user 
             SET reset_token = NULL
             WHERE mail LIKE :mail");
-        $query->execute(array(':mail' => $mail));
-        return $query->rowCount() > 0;
+            $query->execute(array(':mail' => $mail));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
     }
 
     public function reset_password ($mail, $password)
@@ -316,9 +324,32 @@ class UserManager extends DatabaseManager
         return false;
     }
 
+    public function toggle_notifications($login, $enable)
+    {
+        try
+        {
+            if (empty($this->get_user($login)))
+                return false;
+            $query = $this->PDO->prepare("
+            UPDATE user
+            SET notifications = :enable
+            WHERE login LIKE :login");
+            $query->execute(array(
+                ':login' => $login,
+                ':enable' => $enable
+            ));
+            return $query->rowCount() > 0;
+        }
+        catch (Exception $e)
+        {
+            return false;
+        }
+    }
+
     public function new_post($login, $image, $description)
     {
-        try {
+        try
+        {
             if (empty($user = $this->get_user($login)))
                 return false;
             $query = $this->PDO->prepare("
@@ -339,7 +370,8 @@ class UserManager extends DatabaseManager
 
     public function get_user_posts($login)
     {
-        try {
+        try
+        {
             if (empty($user = $this->get_user($login)))
                 return false;
             $query = $this->PDO->prepare("
@@ -359,7 +391,8 @@ class UserManager extends DatabaseManager
 
     public function get_user_post_by_image($image)
     {
-        try {
+        try
+        {
             $query = $this->PDO->prepare("
             SELECT user.login, post.id, post.image, post.description, post.post_date
             FROM post, user

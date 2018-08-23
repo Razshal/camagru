@@ -34,6 +34,11 @@ if (isset($_POST) && isset($_POST["oldPassword"])
         else
             $siteManager->error_log("Unable to change mail : mail is not valid");
     }
+    if (isset($_POST["notifications"]))
+    {
+        if ($_POST["notifications"] === 'on')
 
+        var_dump($_POST['notifications']);
+    }
 }
 require($DOCUMENT_ROOT . "/views/account.php");
