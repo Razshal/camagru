@@ -39,6 +39,6 @@ if (isset($_POST) && isset($_POST["oldPassword"])
     else
         $userManager->toggle_notifications($sessionManager->get_logged_user_name(), 0);
 }
-else if (isset($_POST) && !isset($_POST['oldPassword']))
+else if (isset($_POST) && !empty($_POST) && !isset($_POST['oldPassword']))
     $siteManager->error_log('Please confirm password');
 require ($DOCUMENT_ROOT . "/views/account.php");

@@ -27,7 +27,8 @@
             }?>
         </header>
         <main class="container">
-            <div id="errorPlace">
+            <div id="errorPlace"<?php
+            if ($siteManager->get_logs() === "") echo 'style="display:none"';?>>
                 <?=$siteManager->get_logs()?>
             </div>
             <?=$content?>
