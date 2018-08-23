@@ -76,16 +76,7 @@ if ($userManager != NULL && $sessionManager != NULL
             }
             break;
         case 'getUserPosts':
-            if (isset($_GET['user'])
-                && $sessionManager->is_logged_user_valid()
-                && $posts = $userManager->get_user_posts($_GET['user']))
-            {
-                header('Content-Type: application/json;charset=utf-8');
-                print json_encode($posts, JSON_FORCE_OBJECT);
-                die();
-            }
-            else
-                require("controller/login.php");
+            require('controller/API_get_user_posts.php');
             break;
         case 'deletePost':
             require('controller/delete_post.php');
