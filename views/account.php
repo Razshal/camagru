@@ -17,7 +17,4 @@
         <input class="submit" type="submit" title="send" name="submit" value="Change"><br/>
     </form>
 </h2>
-<?php $content = ob_get_clean();
-var_dump($userManager->get_user($sessionManager->get_logged_user_name())["notifications"]);
-
-?>
+<?php $content = ob_get_clean(); ?>
