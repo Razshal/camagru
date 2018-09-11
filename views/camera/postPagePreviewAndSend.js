@@ -24,7 +24,8 @@ function newPostPreview(image)
                     img.parentNode.removeChild(img);
                 }
                 else
-                    userLog('error', 'Error deleting your image, please retry later');
+                    userLog('error', 'Error deleting your image, ' +
+                        'please retry later');
             });
         }
     };
@@ -44,12 +45,9 @@ function whoAmI()
 async function loadPosts()
 {
     let previousPosts = document.getElementById('previousPosts').childNodes;
-    console.log(previousPosts[0]);
+
     while (previousPosts[0])
-    {
-        console.log('ici');
         previousPosts[0].parentNode.removeChild(previousPosts[0]);
-    }
     return fetch('/index.php?action=getUserPosts&user=' + await whoAmI(), {
         credentials: 'include'
     })
@@ -170,9 +168,8 @@ window.onload = async () =>
 
     /************** Filters **************/
 
-    filters = await fetch('/index.php?action=getFilters', {
-        credentials: 'include'
-    })
+    filters = await fetch('/index.php?action=getFilters',
+        {credentials: 'include'})
     .then(response => response.json())
     .then(filters => {return filters})
     .catch(err => userLog('error', err));
@@ -267,7 +264,8 @@ window.onload = async () =>
             if (response.status === 201)
                 userLog('success', 'Your image has been posted');
             else
-                userLog('error', 'Error treating your image, please retry later');
+                userLog('error', 'Error treating your image, ' +
+                    'please retry later');
         });
         loadPosts();
     };

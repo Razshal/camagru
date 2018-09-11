@@ -1,15 +1,8 @@
 <?php
-if (isset($_GET['startFrom']))
+if (isset($_POST) && isset($_POST['page']) && is_numeric($_POST['page']))
 {
     header('Content-Type: application/json;charset=utf-8');
-    echo json_encode($posts, JSON_FORCE_OBJECT);
-    die();
-}
-else if (isset($_GET['user'])
-    && $sessionManager->is_logged_user_valid()
-    && !($posts = $postManager->get_user_posts($_GET['user'])))
-{
-    print '{}';
+    echo json_encode($postManager->get_last_posts($_POST['page']), JSON_FORCE_OBJECT);
     die();
 }
 else
