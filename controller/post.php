@@ -22,7 +22,7 @@ if (isset($_POST) && isset($_POST['image']) && isset($_POST['filter'])
             $IMAGE_WIDTH, $IMAGE_HEIGHT)
         || !imagepng($finalImage, $IMAGE_STORAGE_FULL_LOCATION . $fileName)
         || !imagedestroy($receivedImage) || !imagedestroy($filter)
-        || !$userManager->new_post($sessionManager->get_logged_user_name(),
+        || !$postManager->new_post($sessionManager->get_logged_user_name(),
             $IMAGE_STORAGE_LOCATION . $fileName, $_POST['desc']))
     {
         header('HTTP/1.1 400 Bad Request');
