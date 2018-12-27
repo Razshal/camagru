@@ -5,13 +5,13 @@ Basic image sharing website with filters, 42 school project
 Except pure css frameworks
 
 ### Final image must be assembled on the server side
-But there is a Js preview
+Js preview authorized
 
 ### Mails
 Confirm account, reset password, notifications
 
 ### Security
-Avoid sql injections, properly store user datas, avoid unauthorized uploads, etc
+Avoid sql injections, secure user data storage, avoid unauthorized actions, etc
 
 ### Stability
 No error logs are tolerated except for https and getUserMedia()
